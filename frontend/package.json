@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "description": "K12 英语学习平台前端（React + Vite）。构建产物由 Maven 复制进 Spring Boot 的 static/。",
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -156,7 +156,7 @@ cd frontend && npm run build   # 产出 frontend/dist，Maven 打包时自动复
 │   ├── dev.sh                  前后端一起起
 │   └── package-exe.sh          用 jpackage 打免安装 exe
 ├── tools/                      词库数据流水线（Python，见下）
-├── LICENSE                     源码 MIT
+├── LICENSE                     许可：GPL-3.0
 └── NOTICE.md                   词库与音频的第三方许可
 ```
 
@@ -312,5 +312,17 @@ FSRS 的核心计算（稳定度、难度、遗忘曲线、间隔预测）由前
 
 ## 许可
 
-源代码 MIT，见 [LICENSE](LICENSE)。词库与音频来自第三方，各有各的许可，
-**公开分发前请务必读一遍 [NOTICE.md](NOTICE.md)**。
+本项目按 **GNU 通用公共许可证第 3 版（GPL-3.0）** 发布，全文见 [LICENSE](LICENSE)。
+
+> Copyright (C) 2026 李林翰
+>
+> 本程序是自由软件：你可以根据自由软件基金会发布的 GNU 通用公共许可证
+> （第 3 版，或你选择的任何更新版本）的条款重新发布和/或修改它。
+>
+> 本程序是基于「有用」的希望分发的，但不提供任何担保，甚至不包含适销性或
+> 特定用途适用性的默示担保。详见 GNU 通用公共许可证。
+
+**为什么是 GPL-3.0**：`data/words.json` 里的词表选编来自
+[RealKai42/qwerty-learner](https://github.com/RealKai42/qwerty-learner)（GPL-3.0），
+它与本仓库一同分发时构成其衍生作品，所以整体按 GPL-3.0 发布。
+其余第三方数据的许可与署名要求见 [NOTICE.md](NOTICE.md)。

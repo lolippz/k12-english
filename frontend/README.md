@@ -191,4 +191,5 @@ frontend/
 
 ## 许可
 
-词库与发音音频来自第三方，各有各的许可。**公开分发前请读 [NOTICE.md](../NOTICE.md)。**
+本仓库按 **GPL-3.0** 发布，全文见 [../LICENSE](../LICENSE)。
+词库与发音音频来自第三方，各有各的许可，署名要求见 [NOTICE.md](../NOTICE.md)。
