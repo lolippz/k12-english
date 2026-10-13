@@ -83,6 +83,20 @@ java -jar target/k12-english.jar
 3. 运行 `com.k12english.K12EnglishApplication` 的 `main` 方法即可。
    仓库里已经放好共享运行配置（`.run/` 目录），打开后直接可用。
 
+> **从 IDEA 直接 Run 就能用，不需要先 `mvn package`。**
+> IDEA 的 `Application` 运行配置只做 `Make`，**不会**跑 Maven 的 `process-resources`，
+> 所以 `target/classes` 里既没有前端产物也没有 `data/words.json`。
+> 为了不让开发者一上手就撞 404，程序内置了两条开发态兜底：
+>
+> | 缺什么 | 兜底 |
+> |---|---|
+> | `classpath:static/`（前端产物） | 追加静态资源位置 `file:frontend/dist/`（见 `application.yml`） |
+> | `classpath:data/words.json`（词库） | 从工作目录的 `data/words.json` 读（见 `WordService`） |
+>
+> 两条兜底只在 classpath 里找不到时才生效，**打包好的 jar 行为完全不变**。
+> 命中的时候启动日志会写一行「改用源码目录 …（开发模式）」。
+> 所以运行配置里的工作目录必须是项目根（`.run/` 里已经这么配好了）。
+
 ### 前端单独开发
 
 后端跑起来之后，前端可以单独起 dev server，改代码有热更新：

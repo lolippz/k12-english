@@ -1,6 +1,9 @@
 package com.k12english.service;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -32,6 +35,16 @@ public class WordService {
 
     private static final Logger log = LoggerFactory.getLogger(WordService.class);
 
+    /**
+     * 源码目录下的词库位置。
+     *
+     * <p>打包好的 jar 里词库在 {@code classpath:data/words.json}。但从 IDEA 直接 Run
+     * （或 {@code mvn spring-boot:run}）时，Maven 的 {@code process-resources} 可能没跑过，
+     * classpath 里就没有它——这里兜底从工作目录读，省得改一行代码都要先打包一次。
+     * IDEA 的运行配置把工作目录设成了项目根，所以相对路径能命中。
+     */
+    private static final Path DEV_WORDS = Path.of("data", "words.json");
+
     private final List<Word> words;
     private final Map<String, Word> byLowerWord;
     private final Map<String, Object> meta;
@@ -40,19 +53,19 @@ public class WordService {
         List<Word> loaded = List.of();
         Map<String, Object> loadedMeta = Map.of();
         String resource = props.getWordsResource();
-        ClassPathResource res = new ClassPathResource(resource);
-        if (!res.exists()) {
-            log.warn("词库数据 {} 不存在。请先跑 tools 下的数据流水线，再执行 mvn package。"
-                    + "当前将以空词库启动，接口可用但没有单词。", resource);
-        } else {
-            try (InputStream in = res.getInputStream()) {
+        try (InputStream in = openWords(resource)) {
+            if (in == null) {
+                log.warn("词库数据 {} 不存在，源码目录 {} 也没有。请先跑 tools 下的数据流水线，"
+                        + "或确认 data/words.json 在。当前将以空词库启动，接口可用但没有单词。",
+                        resource, DEV_WORDS.toAbsolutePath());
+            } else {
                 Envelope env = json.readValue(in, Envelope.class);
                 loaded = env.words() == null ? List.of() : List.copyOf(env.words());
                 loadedMeta = env.meta() == null ? Map.of() : env.meta();
                 log.info("词库载入 {} 个词条", loaded.size());
-            } catch (Exception e) {
-                log.error("词库数据解析失败，将以空词库启动", e);
             }
+        } catch (Exception e) {
+            log.error("词库数据解析失败，将以空词库启动", e);
         }
         this.words = loaded;
         this.meta = loadedMeta;
@@ -61,6 +74,20 @@ public class WordService {
             idx.putIfAbsent(w.w().toLowerCase(), w);
         }
         this.byLowerWord = Map.copyOf(idx);
+    }
+
+    /** 先找 classpath（打包后的 jar），找不到再退回源码目录（IDEA / spring-boot:run 直接跑）。 */
+    private static InputStream openWords(String resource) throws IOException {
+        ClassPathResource res = new ClassPathResource(resource);
+        if (res.exists()) {
+            return res.getInputStream();
+        }
+        if (Files.isReadable(DEV_WORDS)) {
+            log.info("classpath 里没有 {}，改用源码目录 {}（开发模式）",
+                    resource, DEV_WORDS.toAbsolutePath());
+            return Files.newInputStream(DEV_WORDS);
+        }
+        return null;
     }
 
     public int size() {

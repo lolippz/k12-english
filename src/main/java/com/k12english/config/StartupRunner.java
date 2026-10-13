@@ -2,6 +2,8 @@ package com.k12english.config;
 
 import java.awt.Desktop;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Component;
 public class StartupRunner {
 
     private static final Logger log = LoggerFactory.getLogger(StartupRunner.class);
+
+    /** 源码目录下的前端产物位置，与 application.yml 里追加的静态资源位置保持一致。 */
+    private static final Path DEV_STATIC = Path.of("frontend", "dist");
 
     private final AppProperties props;
     private final Environment env;
@@ -59,20 +64,29 @@ public class StartupRunner {
      * <p>Maven 的 {@code with-frontend} profile 是按「frontend/dist 是否存在」条件激活的，
      * 所以没构建前端时 {@code mvn package} 也能过——只是打出来的 jar 里没有界面。
      * 这种情况必须在启动时说清楚，否则用户只会看到一个 404 首页，无从排查。
+     *
+     * <p>注意：{@code application.yml} 把 {@code file:frontend/dist/} 追加成了静态资源位置，
+     * 所以从 IDEA 直接 Run（classpath 里没有 static/，但源码目录有产物）时界面是正常的，
+     * 这里不能误报。
      */
     private void warnIfFrontendMissing() {
         if (new ClassPathResource("static/index.html").exists()) {
             return;
         }
+        if (Files.isReadable(DEV_STATIC.resolve("index.html"))) {
+            log.info("classpath 里没有前端产物，改用源码目录 {}（开发模式）", DEV_STATIC.toAbsolutePath());
+            return;
+        }
         log.warn("""
 
                 ============================================================
-                警告：jar 里没有前端界面（classpath:static/index.html 不存在）
-                首页会返回 404。构建前端产物后再重新打包即可：
+                警告：jar 里没有前端界面（classpath:static/index.html 不存在），
+                源码目录 {} 下也没有产物，首页会返回 404。
+                构建前端产物后再重新打包即可：
 
                     cd frontend && npm install && npm run build
                     cd .. && ./mvnw package
 
-                ============================================================"""); 
+                ============================================================""", DEV_STATIC.toAbsolutePath());
     }
 }

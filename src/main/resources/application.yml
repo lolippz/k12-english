@@ -21,6 +21,17 @@ spring:
       # 前端产物在 jar 内的 static/ 下，交给默认资源链处理
       chain:
         compressed: true
+      # 这里把 Spring Boot 的默认位置原样列出来，只在最后追加一个源码目录。
+      # 为什么要追加：从 IDEA 直接 Run 时，IDEA 只编译 Java 并复制 src/main/resources，
+      # **不会**跑 Maven 的 process-resources，所以 classpath:static/ 是空的，首页会 404。
+      # 追加 file:frontend/dist/ 后，从 IDEA 跑也能看到完整界面。
+      # classpath:/static/ 排在最前，所以打包好的 jar 行为完全不变。
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/public/
+        - file:frontend/dist/
   jackson:
     default-property-inclusion: non_null
 
