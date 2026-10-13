@@ -1,0 +1,18 @@
+# 词库数据流水线依赖
+#
+#   pip install -r requirements.txt
+#
+# 注意：本仓库已提交 data/words.json 与发音 mp3，正常开发**不需要**装这些，
+# 只有在想重新生成词库/音频时才需要。
+
+# --- fetch_dicts.py / normalize.py / enrich.py ---
+requests>=2.31
+zhconv>=1.4            # 例句繁体转简体
+
+# --- gen_audio.py ---
+piper-tts>=1.2         # 离线 TTS，需要另外下载 en_US-lessac-medium.onnx 模型
+lameenc>=1.7           # 合成 32kbps 单声道 mp3
+numpy>=1.26            # piper 的间接依赖，固定下限避免解析出过老的版本
+
+# --- 仅开发用 ---
+pytest>=8.0

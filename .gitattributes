@@ -1,0 +1,16 @@
+# 默认：文本文件统一用 LF，检出时不做平台转换
+* text=auto eol=lf
+
+# Windows 下必须用 CRLF 的脚本
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制，禁止 diff / 换行转换
+*.jar binary
+*.mp3 binary
+*.onnx binary
+*.zip binary
+
+# 生成产物不参与语言统计与 diff
+data/words.json linguist-generated=true
+frontend/public/audio/* linguist-generated=true

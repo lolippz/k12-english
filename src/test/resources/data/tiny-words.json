@@ -1,0 +1,11 @@
+{
+  "meta": { "source": "test-fixture", "total": 6, "note": "单元测试专用的小词表，不要用于生产" },
+  "words": [
+    { "w": "apple", "ph": "'æpl", "tr": ["苹果"], "stages": ["primary"], "books": ["PEP三上"], "forms": {}, "star": 5, "oxford": 1, "tags": [], "frq": 1000, "def": "a round fruit", "ex": ["I eat an apple.", "我吃一个苹果。"], "a": "apple" },
+    { "w": "banana", "ph": "bə'nɑːnə", "tr": ["香蕉"], "stages": ["primary"], "books": ["PEP三上"], "forms": { "复数": "bananas" }, "star": 3, "oxford": 1, "tags": [], "frq": 3000, "def": "a long yellow fruit", "ex": ["Monkeys like bananas.", "猴子喜欢香蕉。"], "a": "banana" },
+    { "w": "cherry", "ph": "'tʃeri", "tr": ["樱桃"], "stages": ["primary", "junior"], "books": ["PEP三上", "人教七上"], "forms": { "复数": "cherries" }, "star": 2, "oxford": 0, "tags": ["中考"], "frq": 8000, "def": "a small red fruit", "ex": [], "a": "cherry" },
+    { "w": "dog", "ph": "dɒɡ", "tr": ["狗"], "stages": ["primary"], "books": ["PEP三下"], "forms": { "复数": "dogs" }, "star": 5, "oxford": 1, "tags": [], "frq": 900, "def": "a common pet", "ex": ["The dog barks.", "狗在叫。"], "a": "dog" },
+    { "w": "elephant", "ph": "'elɪfənt", "tr": ["大象"], "stages": ["junior"], "books": ["人教七上"], "forms": { "复数": "elephants" }, "star": 3, "oxford": 1, "tags": ["中考"], "frq": 4000, "def": "a very large animal", "ex": [], "a": "elephant" },
+    { "w": "fox", "ph": "fɒks", "tr": ["狐狸"], "stages": ["senior"], "books": ["高考3500"], "forms": { "复数": "foxes" }, "star": 2, "oxford": 0, "tags": ["高考"], "frq": 6000, "def": "a wild animal", "ex": [], "a": "fox" }
+  ]
+}

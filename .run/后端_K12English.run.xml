@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="后端 K12English" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.k12english.K12EnglishApplication" />
+    <module name="k12-english" />
+    <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,35 @@
+server:
+  port: ${app.port:8080}
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,application/javascript,application/json
+    min-response-size: 2048
+
+spring:
+  application:
+    name: k12-english
+  # 说明：SQLite 的 DataSource 在 DataSourceConfig 里以 @Bean 提供，
+  # Spring Boot 的自动配置检测到已有 DataSource 会自动让路，无需显式 exclude。
+  sql:
+    init:
+      # SQLite 对 Boot 来说不算「嵌入式数据库」，默认不会执行 schema.sql，
+      # 必须显式设为 always。脚本里全是 CREATE TABLE IF NOT EXISTS，重复执行安全。
+      mode: always
+      schema-locations: classpath:schema.sql
+  web:
+    resources:
+      # 前端产物在 jar 内的 static/ 下，交给默认资源链处理
+      chain:
+        compressed: true
+  jackson:
+    default-property-inclusion: non_null
+
+app:
+  data-dir: ${user.home}/.k12-english
+  port: 8080
+  open-browser: true
+
+logging:
+  level:
+    root: INFO
+    com.k12english: INFO

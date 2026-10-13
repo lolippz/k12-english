@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K12 英语单机学习应用 · 实施方案 v0.2</title>
+<style>
+  :root{
+    --bg:#FFFFFF;--bg-alt:#F7F8FA;--border:#E3E6EA;--border-strong:#CBD2D9;
+    --text:#1A1D21;--text-2:#4A5157;--text-3:#7A828A;
+    --blue:#185FA5;--blue-bg:#E6F1FB;
+    --teal:#0F6E56;--teal-bg:#E1F5EE;
+    --amber:#854F0B;--amber-bg:#FAEEDA;
+    --red:#A32D2D;--red-bg:#FCEBEB;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:940px;margin:0 auto;padding:56px 32px 96px;}
+  header{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:40px;}
+  .kicker{font-size:12px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:14px;}
+  h1{font-size:30px;font-weight:600;margin:0 0 14px;letter-spacing:-.01em;line-height:1.3;}
+  .meta{font-size:13px;color:var(--text-3);}
+  .meta span{margin-right:20px;}
+  h2{font-size:20px;font-weight:600;margin:52px 0 18px;padding-left:12px;border-left:3px solid var(--blue);line-height:1.4;}
+  h3{font-size:16px;font-weight:600;margin:30px 0 10px;}
+  p{margin:0 0 14px;color:var(--text-2);}
+  strong{color:var(--text);font-weight:600;}
+  ul,ol{margin:0 0 16px;padding-left:22px;color:var(--text-2);}
+  li{margin-bottom:7px;}
+  code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:13px;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--blue);}
+  a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(24,95,165,.3);}
+  .callout{background:var(--blue-bg);border:1px solid #B5D4F4;border-radius:12px;padding:22px 26px;margin:0 0 32px;}
+  .callout h3{margin-top:0;color:#042C53;font-size:15px;}
+  .callout p,.callout li{color:#0C447C;}
+  .callout ol{margin-bottom:0;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 26px;}
+  .card{border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+  .card .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-bottom:9px;font-weight:500;}
+  .tag-teal{background:var(--teal-bg);color:var(--teal);}
+  .tag-blue{background:var(--blue-bg);color:var(--blue);}
+  .tag-amber{background:var(--amber-bg);color:var(--amber);}
+  .tag-red{background:var(--red-bg);color:var(--red);}
+  .card h3{margin:0 0 8px;font-size:15px;}
+  .card p{font-size:13.5px;margin:0;line-height:1.7;}
+  .card ul{font-size:13.5px;margin:8px 0 0;padding-left:18px;}
+  .card li{margin-bottom:4px;}
+  .tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:26px;}
+  table{width:100%;border-collapse:collapse;margin:0;font-size:13.5px;}
+  th{text-align:left;font-weight:600;background:var(--bg-alt);color:var(--text);padding:11px 14px;border-bottom:1px solid var(--border-strong);white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td:first-child{color:var(--text);font-weight:500;}
+  .strike{text-decoration:line-through;color:var(--text-3);font-weight:400;}
+  .step{border-left:2px solid var(--border-strong);padding:0 0 4px 22px;margin:0 0 22px;position:relative;}
+  .step::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--blue);}
+  .step .s-title{font-weight:600;color:var(--text);font-size:15px;}
+  .step .s-dur{font-size:12px;color:var(--text-3);margin-left:8px;}
+  .step p{margin:6px 0 0;font-size:13.5px;}
+  .risk{border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:8px;padding:14px 18px;margin-bottom:12px;background:var(--bg-alt);}
+  .risk b{display:block;color:var(--amber);font-size:14px;margin-bottom:4px;}
+  .risk span{font-size:13.5px;color:var(--text-2);}
+  .note{font-size:12.5px;color:var(--text-3);border-top:1px solid var(--border);padding-top:18px;margin-top:56px;}
+  @media(max-width:720px){.wrap{padding:32px 20px 64px;}.grid{grid-template-columns:1fr;}h1{font-size:24px;}table{font-size:12.5px;}th,td{padding:9px 10px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Single-machine build · Revised scope</div>
+  <h1>K12 英语单机学习应用 · 实施方案</h1>
+  <div class="meta">
+    <span>版本 v0.2（取代 v0.1 的服务端方案）</span>
+    <span>日期 2026-10-13</span>
+    <span>形态 学生端单机应用</span>
+  </div>
+</header>
+
+<div class="callout">
+  <h3>范围收窄后，结论变化</h3>
+  <p>「自用、不对外、只要学生端」这个约束，把项目的复杂度<strong>砍掉了约 70%</strong>，同时把三条最重的风险直接清零。</p>
+  <ol>
+    <li><strong>合规风险归零</strong>：教育 App 备案、双减、未成年人个人信息保护，全部只约束"向公众提供服务"的运营方。自用不适用。</li>
+    <li><strong>服务端归零</strong>：没有账号、没有多租户、没有并发，所有数据存本机，零服务器成本、零运维。</li>
+    <li><strong>GPL 风险归零</strong>：<code>qwerty-learner</code>（GPL-3.0）的代码从"只能参考"变成"<strong>可以直接抄</strong>"。不分发就不触发任何义务；即便拷给学生，提供源码即可。</li>
+    <li><strong>剩下的唯一硬工作量是数据准备</strong>——把散落在几个开源项目里的词库、释义、语料、音频，整理成一个可离线内联的数据包。</li>
+  </ol>
+</div>
+
+<h2>一、砍掉了什么</h2>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>v0.1 方案中的模块</th><th>处置</th><th>原因</th></tr></thead>
+  <tbody>
+    <tr><td>教育 App 备案 / 双减合规 / 未成年人保护</td><td>全部删除</td><td>不对外提供服务，不适用</td></tr>
+    <tr><td>老师端 / 家长端 / 班级 / 作业</td><td>全部删除</td><td>只有学生端一个角色</td></tr>
+    <tr><td>账号体系 / 登录注册 / 权限</td><td>删除</td><td>单机单用户，本地配置即可</td></tr>
+    <tr><td>服务端 / 数据库 / 云部署 / 等保</td><td>删除</td><td>数据全部存本机</td></tr>
+    <tr><td>支付 / 会员 / 商城</td><td>删除</td><td>自用</td></tr>
+    <tr><td>Moodle / Open edX 等 LMS 底座</td><td>删除</td><td>本就不需要教务</td></tr>
+    <tr><td>BigBlueButton 直播课堂</td><td>删除</td><td>无教学场景</td></tr>
+    <tr><td>自研发音评分模型</td><td>删除</td><td>改用浏览器内置能力，见第四节</td></tr>
+    <tr><td>教材同步词表（版权授权）</td><td><span class="strike">降级为可选</span></td><td>自用可先做通用考试词表，教材词表后续手工补</td></tr>
+    <tr><td>背单词 / 听力 / 阅读 / 练习 / 学情</td><td><strong>保留并强化</strong></td><td>这才是产品本体</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>二、单机架构</h2>
+<p>三层，全部运行在本机，无任何网络依赖（除可选的 AI 批改）。</p>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>层次</th><th>组成</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>界面层</td>
+      <td>今日任务 · 背单词 · 听力跟读 · 阅读 · 练习 · 学情统计</td>
+      <td>单页应用，路由切换，无登录</td>
+    </tr>
+    <tr>
+      <td>引擎层</td>
+      <td>FSRS 调度 · 发音朗读 · 录音与识别比对 · 本地批改</td>
+      <td>全部跑在前端，无需服务端进程</td>
+    </tr>
+    <tr>
+      <td>数据层</td>
+      <td>词库模块 · 例句短文 · 听力音频 · 学习记录</td>
+      <td>前三项随程序打包；学习记录存本地存储</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p><strong>一个关键工程细节</strong>：数据不要用 <code>fetch</code> 读本地 JSON 文件。直接用 <code>file://</code> 打开页面时，浏览器会以 CORS 策略拦截本地文件请求。正确做法是<strong>把词库编译成 JS/TS 模块</strong>（构建时内联），用 <code>import</code> 引入——既绕开 CORS，也避免额外的文件读取层。</p>
+
+<h2>三、交付形态：三条路线</h2>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>路线</th><th>形态</th><th>优点</th><th>缺点</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>A · 本机 Web 应用<br><span class="tag tag-teal" style="margin-top:6px">推荐起步</span></td>
+      <td>Vite 构建，双击一个 <code>start.bat</code> 起本地服务并打开浏览器</td>
+      <td>开发最快，改一行立刻见效；调试方便；零打包成本</td>
+      <td>需要机器上有 Node 或 Python 运行时</td>
+    </tr>
+    <tr>
+      <td>B · Tauri 桌面应用<br><span class="tag tag-blue" style="margin-top:6px">推荐交付</span></td>
+      <td>复用 A 的全部前端代码，Tauri 套壳打包成免安装 exe</td>
+      <td>双击即用，无需任何环境；体积约 10 MB；可存本地 SQLite；内嵌 WebView2（Edge 内核）</td>
+      <td>首次需要装 Rust 工具链编译一次</td>
+    </tr>
+    <tr>
+      <td>C · Electron</td>
+      <td>同样套壳，打包成 exe</td>
+      <td>上手最简单，生态最熟</td>
+      <td>体积 150 MB 起，对一个学习工具过重</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p><strong>建议路径：A → B</strong>。先用路线 A 把内容和交互跑通（前端代码 100% 可复用），确定好用之后再套 Tauri 打成 exe。两条路线的前端代码完全一致，切换成本接近于零。</p>
+
+<h2>四、自用场景的"零成本能力"清单</h2>
+<p>这是范围收窄后最大的红利——原来需要采购或自研的能力，现在都能用本机已有的东西替代。</p>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>需求</th><th>零成本方案</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>单词 / 例句发音</td><td>edge-tts 预生成 mp3</td><td>微软在线语音，音质接近真人，批量生成后随应用打包，<strong>完全离线可用</strong>。比浏览器内置 TTS 好听得多。</td></tr>
+    <tr><td>跟读评测</td><td>MediaRecorder 录音 + 回放对照</td><td>最低成本版本：录音 → 回放 → 自己对照原文。自用完全够。</td></tr>
+    <tr><td>跟读自动比对<br><span style="font-weight:400;color:#7A828A;font-size:12.5px">（进阶）</span></td><td>whisper.cpp 本地识别 → 与标准文本做词级比对</td><td>能指出"哪个词读错了"。模型文件 tiny 约 75 MB / base 约 150 MB，可离线。或直接调云端 ASR API。</td></tr>
+    <tr><td>记忆调度</td><td>ts-fsrs（MIT）</td><td>纯 TypeScript，浏览器直接跑，无需后端。</td></tr>
+    <tr><td>语法批改</td><td>LLM API（DeepSeek / 通义等）</td><td>自用直接调 API 最省事，一篇作文成本约几分钱。<code>LanguageTool</code> 自托管需要 Java，本地部署反而更重。</td></tr>
+    <tr><td>文本难度分级</td><td>textstat</td><td>Flesch-Kincaid 公式自动估算阅读难度，用于阅读材料排序。</td></tr>
+    <tr><td>数据存储</td><td>IndexedDB（路线 A）/ SQLite（路线 B）</td><td>本地持久化，另做 JSON 导出导入用于备份与换机。</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>需要留意的一点</strong>：浏览器的 <code>SpeechRecognition</code> 接口在 Chrome / Edge 中依赖在线服务，在 Tauri 的内嵌 WebView2 里<strong>不保证可用</strong>。所以跟读评测建议按上表分两层做：先做"录音 + 回放对照"（零依赖、必然可用），需要自动比对时再接 whisper.cpp 或云端 ASR。不要把它设计成强依赖。</p>
+
+<h2>五、功能清单（学生端全量）</h2>
+
+<h3>P0 · 核心闭环（先做这些）</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-teal">P0</span>
+    <h3>今日任务</h3>
+    <p>FSRS 算出的今日待复习词 + 新词配额，一个按钮进入。这是唯一的入口，学生不需要做任何选择。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">P0</span>
+    <h3>背单词三模式</h3>
+    <p>拼写（听音打字）、听音选义、看义选词。每张卡带音标、释义、例句、发音。答完立即反馈并写回 FSRS 状态。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">P0</span>
+    <h3>学情统计</h3>
+    <p>连续打卡天数、累计掌握词数、每日学习量曲线、正确率趋势。自用场景下这是坚持下去的主要动力。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">P0</span>
+    <h3>错题本</h3>
+    <p>反复答错的词自动归集，可单独重练。数据直接来自答题记录，无需额外录入。</p>
+  </div>
+</div>
+
+<h3>P1 · 能力扩展</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-blue">P1</span>
+    <h3>听力跟读</h3>
+    <p>播放音频 → 录音 → 回放 → 原文对照。进阶版接入识别比对。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-blue">P1</span>
+    <h3>分级阅读</h3>
+    <p>精选短文（StoryWeaver CC-BY 绘本 + 公版短篇），点任意词即时查义、一键加入词表。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-blue">P1</span>
+    <h3>词汇与语法练习</h3>
+    <p>选择题与填空题，题目从词库自动生成（选词填空、词形变化），无需人工出题。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-blue">P1</span>
+    <h3>数据导出 / 导入</h3>
+    <p>学习记录导出为 JSON，用于备份与换机迁移。单机应用必备。</p>
+  </div>
+</div>
+
+<h3>P2 · 可选增强</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-amber">P2</span>
+    <h3>写作批改</h3>
+    <p>提交短文，调 LLM 返回错误标注、评分与改进建议。需要配置一个 API Key。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-amber">P2</span>
+    <h3>口语对话</h3>
+    <p>与 AI 自由对话（语音识别 + LLM + TTS）。成本与复杂度最高，最后做。</p>
+  </div>
+</div>
+
+<h2>六、数据准备：唯一的重活</h2>
+<p>这一步决定产品能不能用。四类数据源，加工成四个内联模块。</p>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>数据源</th><th>取什么</th><th>怎么处理</th><th>产出</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>qwerty-learner</td>
+      <td>中考词库、高考词库（JSON）</td>
+      <td>直接拉取，按学段合并去重</td>
+      <td>约 3500-5000 词的词表骨架</td>
+    </tr>
+    <tr>
+      <td>ECDICT</td>
+      <td>释义、音标、BNC/COCA 词频、考试标签</td>
+      <td>用上一步的词表做 join，只保留命中词条，丢弃其余 75 万条</td>
+      <td>词库主数据，<strong>约 2 MB</strong></td>
+    </tr>
+    <tr>
+      <td>StoryWeaver / Gutenberg</td>
+      <td>CC-BY 分级绘本、公版短篇</td>
+      <td>按 textstat 难度排序，选 100-200 篇入库</td>
+      <td>分级阅读语料</td>
+    </tr>
+    <tr>
+      <td>edge-tts</td>
+      <td>—</td>
+      <td>对词表 + 例句批量合成 mp3（约 5000 词 + 例句，可分批）</td>
+      <td>听力与发音音频，<strong>约 20-40 MB</strong></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p><strong>体积估算</strong>：词库 2 MB + 语料 3 MB + 音频 30 MB ≈ <strong>35-45 MB</strong>。这对一个桌面应用完全合理，且全部离线可用。如果嫌音频大，可以只对核心 1500 词生成音频，其余用浏览器 TTS 兜底。</p>
+
+<h2>七、实施步骤</h2>
+
+<div class="step">
+  <span class="s-title">Step 1 · 数据准备</span><span class="s-dur">1 天</span>
+  <p>写一个 Python 脚本：拉 qwerty-learner 词库 → 与 ECDICT CSV 做 join → 输出 <code>words.ts</code>（约 5000 词）。这一步做完，产品的内容底座就定了。</p>
+</div>
+<div class="step">
+  <span class="s-title">Step 2 · 项目骨架</span><span class="s-dur">半天</span>
+  <p>Vite + React + TypeScript + Tailwind 初始化；接入 <code>ts-fsrs</code>，先写一个纯逻辑脚本验证调度行为符合预期。</p>
+</div>
+<div class="step">
+  <span class="s-title">Step 3 · 核心闭环</span><span class="s-dur">2-3 天</span>
+  <p>今日任务 → 背单词三模式 → 答题记录写回 → FSRS 更新下次复习时间 → 学情统计。数据用 IndexedDB 持久化。这一步跑通，产品就已经可用了。</p>
+</div>
+<div class="step">
+  <span class="s-title">Step 4 · 听力与跟读</span><span class="s-dur">1-2 天</span>
+  <p>edge-tts 批量生成音频；实现播放、录音、回放、原文对照。</p>
+</div>
+<div class="step">
+  <span class="s-title">Step 5 · 阅读与练习</span><span class="s-dur">2-3 天</span>
+  <p>分级阅读页（点词查义、加入词表）；词汇与语法练习自动出题。</p>
+</div>
+<div class="step">
+  <span class="s-title">Step 6 · 打包交付</span><span class="s-dur">半天</span>
+  <p>按需套 Tauri，打包成免安装 exe。</p>
+</div>
+<p style="margin-top:24px"><strong>合计约 10-14 个工作日</strong>（业余时间约 3-4 周）可得到一个完整可用的单机版本。相比 v0.1 的 SaaS 方案，周期缩短了一半以上。</p>
+
+<h2>八、剩余风险</h2>
+<div class="risk"><b>数据加工脚本的工作量</b><span>ECDICT 与词表的 join、字段清洗、例句筛选是纯体力活，且容易在音标编码、多义项排序上出细节问题。缓解：先只做"词 + 释义 + 音标 + 发音"四个字段跑通闭环，例句和词频后补。</span></div>
+<div class="risk"><b>语音识别在 WebView2 中不可用</b><span>不要把它设计成强依赖。跟读评测的基线版本用"录音 + 回放对照"，自动比对作为可选增强。</span></div>
+<div class="risk"><b>内容量不足以支撑长期使用</b><span>5000 词对初中三年是够的，但高中可能需要 8000+。缓解：词库设计成可扩展的数据模块，后续追加词表只需改数据不改代码。</span></div>
+<div class="risk"><b>坚持不下去</b><span>这是单机自用项目最大的真实风险——没有外部监督。缓解：P0 阶段就把"连续打卡"和"每日任务"做扎实，用可见的进度曲线维持动力。</span></div>
+
+<div class="note">
+  本文档取代 v0.1 方案中关于服务端架构、合规、老师端与家长端的全部章节；v0.1 中的开源项目清单与复用判断仍然有效。所有开源项目的 License 与数据授权，建议在打包分发前再核对一次。
+</div>
+
+</div>
+</body>
+</html>

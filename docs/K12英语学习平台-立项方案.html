@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K12 英语在线学习平台 · 立项方案 v0.1</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-alt:#F7F8FA;
+    --border:#E3E6EA;
+    --border-strong:#CBD2D9;
+    --text:#1A1D21;
+    --text-2:#4A5157;
+    --text-3:#7A828A;
+    --blue:#185FA5;
+    --blue-bg:#E6F1FB;
+    --teal:#0F6E56;
+    --teal-bg:#E1F5EE;
+    --amber:#854F0B;
+    --amber-bg:#FAEEDA;
+    --red:#A32D2D;
+    --red-bg:#FCEBEB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:56px 32px 96px;}
+  header{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:40px;}
+  .kicker{font-size:12px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:14px;}
+  h1{font-size:30px;font-weight:600;margin:0 0 14px;letter-spacing:-.01em;line-height:1.3;}
+  .meta{font-size:13px;color:var(--text-3);}
+  .meta span{margin-right:20px;}
+  h2{font-size:20px;font-weight:600;margin:52px 0 18px;padding-left:12px;border-left:3px solid var(--blue);line-height:1.4;}
+  h3{font-size:16px;font-weight:600;margin:30px 0 10px;color:var(--text);}
+  p{margin:0 0 14px;color:var(--text-2);}
+  strong{color:var(--text);font-weight:600;}
+  ul,ol{margin:0 0 16px;padding-left:22px;color:var(--text-2);}
+  li{margin-bottom:7px;}
+  code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:13px;background:var(--bg-alt);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--blue);}
+  a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(24,95,165,.3);}
+  a:hover{border-bottom-color:var(--blue);}
+
+  .callout{background:var(--blue-bg);border:1px solid #B5D4F4;border-radius:12px;padding:22px 26px;margin:0 0 32px;}
+  .callout h3{margin-top:0;color:#042C53;font-size:15px;}
+  .callout p,.callout li{color:#0C447C;}
+  .callout ol{margin-bottom:0;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 26px;}
+  .card{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:var(--bg);}
+  .card .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-bottom:9px;font-weight:500;}
+  .tag-teal{background:var(--teal-bg);color:var(--teal);}
+  .tag-blue{background:var(--blue-bg);color:var(--blue);}
+  .tag-amber{background:var(--amber-bg);color:var(--amber);}
+  .tag-red{background:var(--red-bg);color:var(--red);}
+  .card h3{margin:0 0 8px;font-size:15px;}
+  .card p{font-size:13.5px;margin:0;line-height:1.7;}
+  .card ul{font-size:13.5px;margin:8px 0 0;padding-left:18px;}
+  .card li{margin-bottom:4px;}
+
+  table{width:100%;border-collapse:collapse;margin:0 0 26px;font-size:13.5px;}
+  th{text-align:left;font-weight:600;background:var(--bg-alt);color:var(--text);padding:11px 14px;border-bottom:1px solid var(--border-strong);white-space:nowrap;}
+  td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td:first-child{color:var(--text);font-weight:500;}
+  .tbl-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:26px;}
+  .tbl-wrap table{margin:0;}
+
+  .phase{border-left:2px solid var(--border-strong);padding:0 0 4px 22px;margin:0 0 26px;position:relative;}
+  .phase::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--blue);}
+  .phase .ph-title{font-weight:600;color:var(--text);font-size:15px;}
+  .phase .ph-dur{font-size:12px;color:var(--text-3);margin-left:8px;}
+  .phase p{margin:6px 0 0;font-size:13.5px;}
+
+  .risk{border:1px solid var(--border);border-left:3px solid var(--red);border-radius:8px;padding:14px 18px;margin-bottom:12px;background:var(--bg-alt);}
+  .risk b{display:block;color:var(--red);font-size:14px;margin-bottom:4px;}
+  .risk span{font-size:13.5px;color:var(--text-2);}
+
+  .note{font-size:12.5px;color:var(--text-3);border-top:1px solid var(--border);padding-top:18px;margin-top:56px;}
+  @media(max-width:720px){
+    .wrap{padding:32px 20px 64px;}
+    .grid{grid-template-columns:1fr;}
+    h1{font-size:24px;}
+    table{font-size:12.5px;}
+    th,td{padding:9px 10px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Product Requirements &amp; Feasibility</div>
+  <h1>K12 英语在线学习平台 · 立项方案</h1>
+  <div class="meta">
+    <span>版本 v0.1（讨论稿）</span>
+    <span>日期 2026-10-13</span>
+    <span>范围 小学 / 初中 / 高中</span>
+  </div>
+</header>
+
+<div class="callout">
+  <h3>结论先行</h3>
+  <p>这个方向<strong>技术上完全可行，且开源生态足以让你省掉 60% 以上的基础工作量</strong>。真正的门槛不在技术，而在三件事：<strong>内容版权、教育 App 备案合规、以及冷启动的获客渠道</strong>。</p>
+  <ol>
+    <li><strong>不要从 LMS 起手</strong>。Moodle / Open edX / Canvas 的代码里，教务、商城、课程管理占了 80%，与 K12 英语的核心学习闭环无关。只借鉴其数据模型。</li>
+    <li><strong>直接复用四件套</strong>：<code>ECDICT</code>（词典数据）+ <code>qwerty-learner</code>（背单词交互与词库）+ <code>ts-fsrs</code>（记忆调度算法）+ <code>LanguageTool</code>（语法批改）。这四块加起来能省 4-6 个月。</li>
+    <li><strong>差异化不在"更好的背单词 App"</strong>，而在<strong>校内进度对齐 + 老师布置作业闭环 + 学情数据打通</strong>。纯 C 端工具型产品打不过百词斩、多邻国。</li>
+    <li><strong>合规前置</strong>。教育移动应用备案需 2-3 个月，且要求 ICP + 等保测评先行；定位必须避开"学科类培训"。</li>
+  </ol>
+</div>
+
+<h2>一、可参考的开源项目清单</h2>
+
+<p>按能力域拆成六类。每一类标注了 <strong>License</strong> 和<strong>复用建议</strong>——这是选型时最容易踩坑的地方：GPL 系传染性强，商用前必须逐条核对。</p>
+
+<h3>1. 背单词 / 间隔重复（核心入口，建议直接复用）</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>qwerty-learner</h3>
+    <p>最贴合你需求的项目。React + TypeScript，内置<strong>中考、高考、四级、六级、雅思、托福、GRE</strong>词库，含词典释义、音标、发音、听写模式、错题本。</p>
+    <ul>
+      <li>仓库：<code>RealKai42/qwerty-learner</code></li>
+      <li>License：GPL-3.0（<strong>注意传染性</strong>）</li>
+      <li>价值：交互范式 + 词库数据结构可直接借用</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>FSRS / ts-fsrs</h3>
+    <p>现代间隔重复调度算法，效果显著优于 Anki 传统的 SM-2。有 TypeScript 与 Python 双实现，可独立嵌入你的后端或前端。</p>
+    <ul>
+      <li>仓库：<code>open-spaced-repetition/ts-fsrs</code></li>
+      <li>License：MIT（<strong>商用无风险</strong>）</li>
+      <li>价值：记忆调度引擎零成本落地</li>
+    </ul>
+  </div>
+</div>
+
+<h3>2. 词典 / 词库（数据层，建议直接复用）</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>ECDICT</h3>
+    <p>免费英汉词典数据库，<strong>76 万词条</strong>，整合 BNC / COCA 语料库词频矫正，含柯林斯星级、牛津 3000 标记、考试标签（中考/高考/四六级/考研）。</p>
+    <ul>
+      <li>仓库：<code>skywind3000/ECDICT</code></li>
+      <li>License：MIT</li>
+      <li>价值：词典层几乎零成本</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="tag tag-amber">需自行获取</span>
+    <h3>教材同步词表</h3>
+    <p>人教版 / 外研社 / 译林版的<strong>单元词表与课文</strong>受版权保护，商用需授权。这是整个项目最大的法律风险点。</p>
+    <ul>
+      <li>替代方案：自研教研整理 + 公版语料</li>
+      <li>建议：v1 用通用考试词表，版权授权并行推进</li>
+    </ul>
+  </div>
+</div>
+
+<h3>3. 听说 / 语音（工程成本最高，建议分期）</h3>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>项目</th><th>用途</th><th>License</th><th>建议</th></tr></thead>
+  <tbody>
+    <tr><td>Kaldi + GOP</td><td>音素级发音评测（好发音度算法）</td><td>Apache-2.0</td><td>v2 再做，工程量大</td></tr>
+    <tr><td>speechocean762</td><td>L2 英语发音语料，人工多级标注，可训 CAPT 模型</td><td>学术许可</td><td>自训评分模型的唯一可行路径</td></tr>
+    <tr><td>Whisper / faster-whisper</td><td>自动识别，生成听力材料字幕与时间轴</td><td>MIT</td><td>v1 用于内容生产</td></tr>
+    <tr><td>Piper / Kokoro / Edge-TTS</td><td>本地 TTS，批量生成听力音频</td><td>MIT / Apache</td><td>v1 用于内容生产</td></tr>
+    <tr><td>OpenLingo</td><td>LLM 驱动的跨平台口语陪练 + 作文批改</td><td>开源</td><td>v2 参考其对话编排</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>关键判断</strong>：发音打分是典型的"看上去很美、工程很贵"的模块。自研音素级评分需要语音团队与标注数据，周期以年计。建议 v1 只做<strong>跟读录音 + 回放对比 + LLM 粗评</strong>，真·评分接云厂商 API 兜底。</p>
+
+<h3>4. 读写 / 批改（可直接复用）</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>LanguageTool</h3>
+    <p>开源语法与拼写检查引擎，支持 30+ 语言，英文规则最全，可自托管。作为写作批改的<strong>规则层</strong>，与 LLM 点评互补。</p>
+    <ul><li>License：LGPL-2.1（可商用，需注意动态链接）</li></ul>
+  </div>
+  <div class="card">
+    <span class="tag tag-blue">参考改造</span>
+    <h3>GECToR / AutoGradAI</h3>
+    <p>GECToR 是 Grammarly 开源的语法纠错模型（HuggingFace 有现成权重）；AutoGradAI 是基于 LangChain 的作文批改系统，其<strong>批改报告结构</strong>值得直接抄。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>分级阅读语料</h3>
+    <p>StoryWeaver（Pratham Books，数千本多语种分级绘本，CC-BY）、Bloom Library（SIL 开源图书平台）、Project Gutenberg（公版书）、Simple English Wikipedia（A1-B1 难度）。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-teal">直接复用</span>
+    <h3>textstat</h3>
+    <p>可读性计算库，用 Flesch-Kincaid 等公式给任意文本自动估算难度分级，是做<strong>自适应推荐</strong>的轻量方案。</p>
+  </div>
+</div>
+
+<h3>5. 题库 / 考试 / 组卷（参考数据模型）</h3>
+<div class="grid">
+  <div class="card">
+    <span class="tag tag-blue">参考改造</span>
+    <h3>学之思 xzs</h3>
+    <p>Java + Vue 前后端分离，2500+ star。支持单选/多选/判断/填空/解答 + 数学公式，含 PC 端与微信小程序、<strong>错题本、按年级过滤试卷、成绩分析</strong>。</p>
+    <ul>
+      <li>仓库：<code>mindskip/xzs</code>（PostgreSQL）/ <code>mindskip/xzs-mysql</code></li>
+      <li>价值：K12 考试模块的最佳参考，数据模型可直接借用</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="tag tag-blue">按需引入</span>
+    <h3>H5P / QTI</h3>
+    <p>H5P 提供可交互题型（拖拽、连线、填空、互动视频），MIT 许可；QTI 是 IMS 题库交换标准，利于未来对接学校系统与第三方题库。</p>
+  </div>
+</div>
+
+<h3>6. LMS 底座 / 直播课堂（建议不采用）</h3>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>项目</th><th>定位</th><th>License</th><th>结论</th></tr></thead>
+  <tbody>
+    <tr><td>Moodle</td><td>全球份额最高的开源 LMS，插件 400+，支持 SCORM/xAPI</td><td>GPL-3.0</td><td>太重，插件生态面向机构教务</td></tr>
+    <tr><td>Open edX</td><td>MIT / 哈佛出品，MOOC 级，Tutor 简化部署</td><td>Apache-2.0</td><td>面向大学，架构过重</td></tr>
+    <tr><td>Canvas LMS</td><td>UX 标杆，Ruby on Rails</td><td>AGPL-3.0</td><td>AGPL 对 SaaS 有传染风险</td></tr>
+    <tr><td>EduSoho / MeEdu / 领课教育</td><td>国产网校系统，含直播、题库、商城</td><td>部分开源</td><td>偏"卖课"，可参考教务模型</td></tr>
+    <tr><td>BigBlueButton</td><td>专为在线教学设计的虚拟教室（白板批注、举手、分组、录制）</td><td>LGPL-3.0</td><td>只在做 1v1/小班外教课时才需要</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>理由</strong>：LMS 的复杂度主要来自"机构教务 + 多租户 + 课程商城"，而你的核心资产是<strong>学习行为数据与内容</strong>。用 LMS 做底座，等于把 80% 的代码量花在与你无关的事情上，还会被 GPL/AGPL 的许可条款绑住。</p>
+
+<h2>二、产品定位：三个必须先回答的问题</h2>
+
+<h3>问题 1：你的付费用户到底是谁？</h3>
+<p>K12 的特殊性在于<strong>使用者与付费者分离</strong>。学生是使用者，家长是付费者，老师是渠道。</p>
+<ul>
+  <li><strong>纯 C 端学生自学</strong>：获客成本高，学生留存靠趣味性，但付费意愿弱（学生没钱）。</li>
+  <li><strong>家长付费</strong>：付费意愿最强，但决策链长，需要"可见的效果证明"——成绩、报告、老师背书。</li>
+  <li><strong>学校 / 老师</strong>：付费能力强、批量获客，但销售周期长，且需教育 App 备案与内容审核。</li>
+</ul>
+<p><strong>建议采用双边模型</strong>：学生端免费（获客）+ 老师端布置作业（留存与增长引擎）+ 家长端付费订阅（变现）。这是一起作业验证过的路径。</p>
+
+<h3>问题 2：差异化在哪？</h3>
+<p>百词斩、扇贝、多邻国、一起作业都已成熟。<strong>你不应该做"更好的背单词 App"</strong>。机会点有三个：</p>
+<ol>
+  <li><strong>教材同步</strong>：按人教版/外研社/译林版单元词表与课文进度组织内容，刚需、高频、可标准化。这是纯工具型产品做不到的（它们只能做通用词表）。</li>
+  <li><strong>校内闭环</strong>：老师布置作业 → 学生完成 → 自动批改 → 班级学情报表 → 家长推送。这条链路把"工具"变成"教学环节"。</li>
+  <li><strong>学情数据打通</strong>：课堂表现、作业、考试、错题、复习记录统一建模，做薄弱点诊断与自适应推荐。<strong>这恰好是你在医疗信息化领域积累的系统集成与数据治理能力最能发挥的地方。</strong></li>
+</ol>
+
+<h3>问题 3：合规红线在哪？（硬门槛）</h3>
+<div class="callout">
+  <ol>
+    <li><strong>教育移动互联网应用备案</strong>——教育部强制，前置条件是 ICP 备案 + 等级保护测评，周期通常 2-3 个月，必须最早启动。</li>
+    <li><strong>双减政策</strong>——义务教育阶段学科类培训不得资本化运作、不得在线上开展营利性培训、不得超纲超前教学；高中阶段参照执行。定位必须是<strong>"学习工具 + 校内教学辅助"</strong>，而非"学科类培训机构"，这是产品定位的第一约束。</li>
+    <li><strong>未成年人个人信息保护</strong>——14 岁以下需监护人同意与单独同意，不得过度收集，需提供家长查阅与删除通道。</li>
+    <li><strong>内容版权</strong>——教材词表、课文、真题均受版权保护，商用需逐项授权；用户生成内容（作文、录音）需审核机制。</li>
+  </ol>
+</div>
+
+<h2>三、功能规划：MVP → V1 → V2</h2>
+
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>阶段</th><th>目标</th><th>功能范围</th><th>明确不做</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>MVP<br><span style="font-weight:400;color:#7A828A">8-10 周</span></td>
+      <td>验证核心学习闭环能否留住用户</td>
+      <td>
+        学段/教材/年级选择 → 单元词表（词-音-义-例句）<br>
+        背单词：FSRS 调度 + 拼写/听音/选义三种模式 + 每日任务<br>
+        听力：跟读录音 + 回放 + 原文对照<br>
+        练习：词汇与语法选择/填空题<br>
+        学情：打卡、连续天数、掌握度、错题本
+      </td>
+      <td>直播、AI 口语评分、课程商城、教务管理、支付</td>
+    </tr>
+    <tr>
+      <td>V1<br><span style="font-weight:400;color:#7A828A">+3 个月</span></td>
+      <td>形成校内教学闭环，跑通第一所学校试点</td>
+      <td>
+        老师端：建班、布置作业、班级学情报表<br>
+        学生端：作业中心、错题智能重练<br>
+        写作：AI 批改（LanguageTool 规则 + LLM 点评）+ 范文<br>
+        阅读：分级绘本 + 生词一键查 + 加入词表<br>
+        家长端：学习报告推送（企业微信 / 微信服务号）<br>
+        语音：跟读打分（云 API 兜底）
+      </td>
+      <td>自研发音评分模型、直播课堂</td>
+    </tr>
+    <tr>
+      <td>V2<br><span style="font-weight:400;color:#7A828A">+6 个月</span></td>
+      <td>建立技术壁垒，拉开与工具型产品的差距</td>
+      <td>
+        AI 口语陪练（LLM + ASR + TTS 全链路对话）<br>
+        自适应难度引擎（CEFR 定级 + 知识点图谱 + 薄弱点推荐）<br>
+        组卷与模拟考（中考/高考题型）<br>
+        内容生产工具（教研一键生成练习与解析）
+      </td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2>四、技术选型建议</h2>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>层次</th><th>推荐方案</th><th>选型依据</th></tr></thead>
+  <tbody>
+    <tr><td>前端</td><td>Next.js + React + TypeScript + Tailwind；移动端 H5 + 微信小程序</td><td>与 qwerty-learner 同栈，交互组件可参考；K12 主入口是小程序</td></tr>
+    <tr><td>后端</td><td>Python (FastAPI) 优先，或 Node.js (NestJS)</td><td>AI 能力密集（ASR/TTS/LLM/批改），Python 生态更顺</td></tr>
+    <tr><td>数据库</td><td>PostgreSQL + Redis + 对象存储（音频）</td><td>词库、题库、学情关系复杂，PG 更适合；题库 JSON 字段灵活</td></tr>
+    <tr><td>记忆调度</td><td>ts-fsrs（Node）或 py-fsrs（Python）</td><td>MIT 许可，效果优于 SM-2</td></tr>
+    <tr><td>AI 能力</td><td>LLM（批改/讲解/陪练）+ Whisper（ASR）+ Piper/Edge-TTS（TTS）+ LanguageTool（语法）</td><td>全部可自托管或低成本调用，无供应商锁定</td></tr>
+    <tr><td>部署</td><td>Docker Compose 起步 → K8s；国内需 ICP + 等保二级</td><td>合规要求，且便于私有化交付给学校</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>五、复用 vs 自研决策矩阵</h2>
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>模块</th><th>决策</th><th>依据</th><th>预估节省</th></tr></thead>
+  <tbody>
+    <tr><td>词库 / 词典数据</td><td>直接复用</td><td>ECDICT 76 万词条 + qwerty-learner 考试词表</td><td>4-6 个月</td></tr>
+    <tr><td>背单词交互</td><td>参考实现</td><td>qwerty-learner 的交互范式与数据结构</td><td>1-2 个月</td></tr>
+    <tr><td>SRS 调度算法</td><td>直接复用</td><td>FSRS / ts-fsrs，MIT</td><td>2-3 个月</td></tr>
+    <tr><td>语法批改</td><td>直接复用</td><td>LanguageTool 自托管</td><td>3-4 个月</td></tr>
+    <tr><td>分级阅读语料</td><td>直接复用</td><td>StoryWeaver / Gutenberg / Simple Wikipedia（CC 或公版）</td><td>3-6 个月</td></tr>
+    <tr><td>考试 / 组卷</td><td>参考改造</td><td>学之思数据模型，前端自研</td><td>2-3 个月</td></tr>
+    <tr><td>发音评分</td><td>v2 外采</td><td>自研需语音团队 + 标注数据，成本极高</td><td>—</td></tr>
+    <tr><td>LMS 底座</td><td>不采用</td><td>教务/商城代码占 80%，与核心闭环无关</td><td>—</td></tr>
+    <tr><td>直播课堂</td><td>v2 外采</td><td>自建运维成本重，BigBlueButton 或第三方 SDK</td><td>—</td></tr>
+    <tr><td>教材同步内容</td><td>自研 + 授权</td><td>版权是护城河也是最大成本项，无法复用</td><td>—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>六、路线图</h2>
+
+<div class="phase">
+  <span class="ph-title">Phase 0 · 调研与预研</span><span class="ph-dur">2 周</span>
+  <p>确定教材版本范围（建议先做人教版小学 + 初中）；跑通 ECDICT 导入、qwerty-learner 本地运行、ts-fsrs 调度验证；启动教育 App 备案与 ICP 流程；确认版权授权的可行路径。</p>
+</div>
+<div class="phase">
+  <span class="ph-title">Phase 1 · MVP 上线内测</span><span class="ph-dur">8-10 周</span>
+  <p>完成单词、听力、基础练习、学情四个模块；招募 50-100 名学生内测；核心指标：次日留存 &gt; 35%、7 日留存 &gt; 20%、日均使用时长 &gt; 12 分钟。</p>
+</div>
+<div class="phase">
+  <span class="ph-title">Phase 2 · 教学闭环与试点</span><span class="ph-dur">3 个月</span>
+  <p>上线老师端与作业闭环、写作批改、分级阅读、家长报告；签约 1-2 所学校做真实场景试点，验证老师的使用意愿与家长付费转化。</p>
+</div>
+<div class="phase">
+  <span class="ph-title">Phase 3 · AI 能力与自适应</span><span class="ph-dur">6 个月</span>
+  <p>口语陪练、自适应难度引擎、组卷与模拟考、教研内容生产工具。目标是形成"内容 + 数据 + 算法"的三重壁垒。</p>
+</div>
+
+<h2>七、风险清单</h2>
+
+<div class="risk"><b>内容版权（最高风险）</b><span>教材词表与课文受版权保护，商用需授权。缓解：v1 用公版与 CC 授权语料 + 通用考试词表，同时并行推进出版社授权谈判。版权谈不下来，产品定位需退回到"通用英语学习工具"。</span></div>
+<div class="risk"><b>合规备案周期</b><span>教育 App 备案需 ICP + 等保前置，周期 2-3 个月，且可能因内容审核不通过。缓解：Phase 0 就启动，不等到产品做完。</span></div>
+<div class="risk"><b>内容生产是最大瓶颈</b><span>K12 英语的内容量级极大（每册每单元的词汇、听力、练习、解析），纯人工教研无法支撑。缓解：用 LLM + TTS + 模板化流程批量生成，教研只做审核与抽检。</span></div>
+<div class="risk"><b>获客成本高</b><span>K12 家长决策链长，纯线上投放 ROI 差。缓解：走学校 / 老师渠道做 B 端切入，用老师布置作业带动学生与家长注册，形成自然增长。</span></div>
+<div class="risk"><b>巨头竞争</b><span>百词斩、多邻国、一起作业在各自赛道已成熟。缓解：不做通用工具，做"校内同步 + 数据打通"的垂直整合，这是巨头不愿做的重活。</span></div>
+<div class="risk"><b>开源许可风险</b><span>qwerty-learner 是 GPL-3.0、Canvas 是 AGPL-3.0，直接用于闭源 SaaS 有法律风险。缓解：GPL 项目只参考交互与数据结构，不复制代码；优先选 MIT / Apache-2.0 的组件。</span></div>
+
+<div class="note">
+  本文档基于公开资料与开源项目现状整理，所有 License 与政策条款请在正式立项前由法务与合规团队复核。项目链接与版本信息截至 2026 年 10 月。
+</div>
+
+</div>
+</body>
+</html>

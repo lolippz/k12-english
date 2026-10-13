@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.k12english</groupId>
+  <artifactId>k12-english</artifactId>
+  <version>1.0.0</version>
+  <name>K12 English</name>
+  <description>单机版 K12 英语学习应用（小学 / 初中 / 高中）</description>
+
+  <properties>
+    <java.version>17</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <!-- SQLite：单机应用用文件型数据库，免安装、免服务 -->
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>${sqlite-jdbc.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!-- 固定产物名，jpackage 脚本里不用再拼版本号 -->
+    <finalName>k12-english</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.k12english.K12EnglishApplication</mainClass>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- FSRS 交叉验证用例较多，给足内存 -->
+          <argLine>-Xmx512m -Dfile.encoding=UTF-8</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      前端产物打包。
+
+      只有当前端已经构建过（frontend/dist 存在）时这个 profile 才激活，
+      所以只改后端时 `mvn package` 依然能过，不会因为找不到目录而失败。
+
+      激活后做两件事：
+        1. frontend/dist        -> target/classes/static   （含 6877 个发音 mp3）
+        2. data/words.json      -> target/classes/data     （后端词库数据源）
+    -->
+    <profile>
+      <id>with-frontend</id>
+      <activation>
+        <file>
+          <exists>${project.basedir}/frontend/dist</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-frontend-dist</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                  <changeDetection>timestamp</changeDetection>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/frontend/dist</directory>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      词库数据打包。data/words.json 由 tools 下的数据流水线产出（已随仓库提交，
+      所以全新 clone 也能直接构建）。与 with-frontend 分开，方便只换词库、不重建前端。
+    -->
+    <profile>
+      <id>with-words</id>
+      <activation>
+        <file>
+          <exists>${project.basedir}/data/words.json</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-words-json</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.outputDirectory}/data</outputDirectory>
+                  <changeDetection>timestamp</changeDetection>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/data</directory>
+                      <includes>
+                        <include>words.json</include>
+                      </includes>
+                      <filtering>false</filtering>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

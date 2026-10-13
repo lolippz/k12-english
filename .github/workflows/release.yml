@@ -1,0 +1,133 @@
+name: Release
+
+# 打一个 v* 标签就自动构建并发布 Release。
+#   git tag v1.0.0 && git push origin v1.0.0
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 版本号（不带 v，例如 1.0.0）
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  jar:
+    name: 构建 jar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 构建前端
+        run: |
+          npm ci
+          npm run build
+        working-directory: frontend
+
+      - name: 构建 jar
+        run: ./mvnw -B -ntp package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: target/k12-english.jar
+
+  windows-exe:
+    name: 构建 Windows 免安装包
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 构建前端
+        shell: bash
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: 确定版本号
+        id: ver
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            V="${{ github.event.inputs.version }}"
+          else
+            V="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
+      - name: jpackage 打包
+        shell: bash
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: bash scripts/package-exe.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: dist/K12English-*-windows-x64.zip
+
+  publish:
+    name: 发布 Release
+    needs: [jar, windows-exe]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: 整理产物
+        run: |
+          mkdir -p out
+          cp artifacts/jar/k12-english.jar out/
+          cp artifacts/windows-exe/*.zip out/
+          ls -lh out
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: out/*
+          body: |
+            ## 下载
+
+            | 文件 | 说明 |
+            |---|---|
+            | `K12English-*-windows-x64.zip` | Windows 免安装版，解压双击 exe 即用（自带精简 JRE，无需装 Java） |
+            | `k12-english.jar` | 通用 jar，需要目标机器有 JDK 17+，`java -jar k12-english.jar` |
+
+            ## 使用
+
+            启动后自动打开浏览器，默认地址 <http://127.0.0.1:8080>。
+            学习进度保存在 `~/.k12-english/progress.db`，升级不会丢。
+
+            词库与发音音频来自第三方，分发前请阅读仓库里的 `NOTICE.md`。

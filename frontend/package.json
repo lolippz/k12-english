@@ -1,0 +1,27 @@
+{
+  "name": "k12-english-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "K12 英语学习平台前端（React + Vite）。构建产物由 Maven 复制进 Spring Boot 的 static/。",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "smoke": "node smoke.mjs",
+    "smoke:api": "node smoke-api.mjs",
+    "full": "bash ../scripts/dev.sh"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "ts-fsrs": "^5.4.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  }
+}

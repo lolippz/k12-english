@@ -1,0 +1,39 @@
+# EditorConfig — https://editorconfig.org
+# IDEA / VS Code / Vim 都原生支持，保证多人协作时缩进与换行一致。
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+
+# Java：IDEA 默认 4 空格
+[*.java]
+indent_size = 4
+max_line_length = 120
+
+# 前端：2 空格
+[*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml,css,html}]
+indent_size = 2
+
+[*.{xml,pom}]
+indent_size = 2
+
+[*.md]
+# Markdown 里行尾两个空格是有意义的换行符，不能删
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+max_line_length = 100
+
+# Windows 批处理必须 CRLF
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# 生成产物不参与格式校验
+[data/words.json]
+insert_final_newline = false

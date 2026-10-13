@@ -1,0 +1,45 @@
+# ---------------- 构建产物 ----------------
+target/
+frontend/dist/
+frontend/node_modules/
+# jpackage 的输出（根目录下的 dist/ 与 build/，与 frontend/dist 区分开）
+/dist/
+/build/
+*.class
+*.jar
+!**/maven-wrapper.jar
+
+# ---------------- 数据流水线中间产物 ----------------
+# 注意：data/words.json 是最终词库，**已随仓库提交**，不要忽略，
+# 否则全新 clone 后构建出来的 jar 里没有单词。
+tools/out/
+tools/cache/
+tools/__pycache__/
+__pycache__/
+*.py[cod]
+
+# ---------------- IDE ----------------
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# ---------------- 操作系统 ----------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------- 本地环境与日志 ----------------
+.env.local
+.env.*.local
+*.log
+nohup.out
+
+# ---------------- 运行期数据 ----------------
+# SQLite 进度库落在用户目录（~/.k12-english），这里兜底防误提交
+*.db
+*.db-wal
+*.db-shm
