@@ -15,6 +15,18 @@ if ! command -v java >/dev/null 2>&1 && [ -z "${JAVA_HOME:-}" ]; then
   exit 1
 fi
 
+# 优先用 PATH 上的 java；PATH 上没有但设了 JAVA_HOME，就用 $JAVA_HOME/bin/java。
+# （只检查 JAVA_HOME 却仍然直接调 `java`，在「装了 JDK 但没加进 PATH」的机器上会
+#   前面检查通过、后面启动却 command not found。）
+if command -v java >/dev/null 2>&1; then
+  JAVA_BIN="java"
+elif [ -x "${JAVA_HOME:-}/bin/java" ]; then
+  JAVA_BIN="$JAVA_HOME/bin/java"
+else
+  echo "[错误] JAVA_HOME 指向的目录下没有 bin/java：${JAVA_HOME:-}" >&2
+  exit 1
+fi
+
 # 1. 前端产物
 if [ ! -f frontend/dist/index.html ]; then
   echo "[1/2] 前端产物不存在，正在构建..."
@@ -27,7 +39,8 @@ fi
 
 # 2. 后端 jar
 if [ ! -f target/k12-english.jar ]; then
-  echo "[2/2] 正在构建后端（首次约 1-2 分钟）..."
+  echo "[2/2] 正在构建后端..."
+  echo "      首次构建要把 6877 个发音 mp3 复制进 jar，可能明显偏慢（详见 README）。"
   ./mvnw -B -DskipTests package
 fi
 
@@ -36,4 +49,4 @@ echo
 echo "正在启动，浏览器会自动打开 http://127.0.0.1:8080"
 echo "按 Ctrl+C 停止服务。"
 echo
-exec java -Dfile.encoding=UTF-8 -jar target/k12-english.jar "$@"
+exec "$JAVA_BIN" -Dfile.encoding=UTF-8 -jar target/k12-english.jar "$@"

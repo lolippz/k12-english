@@ -43,7 +43,8 @@ if not exist "frontend\dist\index.html" (
 
 rem ---------- 3. 缺 jar 就打包 ----------
 if not exist "target\k12-english.jar" (
-  echo [2/2] 正在构建后端（首次约 1-2 分钟）...
+  echo [2/2] 正在构建后端...
+  echo       首次构建要把 6877 个发音 mp3 复制进 jar，可能明显偏慢（详见 README）。
   call mvnw.cmd -B -DskipTests package
   if errorlevel 1 (
     echo [错误] 后端构建失败。

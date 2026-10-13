@@ -20,18 +20,11 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: 跑测试
-        run: ./mvnw -B -ntp test
-
-      - name: 打包
+      # 一步同时验证两件事：49 个 Java 测试全绿，以及「没有 frontend/dist 时
+      # with-frontend profile 不激活也能打包成功」这条条件激活路径没坏。
+      # 注意：这里产出的 jar 里**没有界面**，真正可用的 jar 由下面的 e2e job 产出并上传。
+      - name: 跑测试并打包（不含前端界面）
         run: ./mvnw -B -ntp package
-
-      - name: 上传 jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: k12-english-jar
-          path: target/k12-english.jar
-          retention-days: 7
 
   frontend:
     name: 前端（Node 22）
@@ -109,6 +102,14 @@ jobs:
       - name: 前后端契约冒烟
         run: node smoke-api.mjs http://127.0.0.1:8099
         working-directory: frontend
+
+      # 这个 jar 里前端界面、词库、6877 个发音 mp3 都在，是可以直接 `java -jar` 跑的成品。
+      - name: 上传完整 jar（含前端界面）
+        uses: actions/upload-artifact@v4
+        with:
+          name: k12-english-jar
+          path: target/k12-english.jar
+          retention-days: 7
 
       - name: 失败时输出服务日志
         if: failure()
