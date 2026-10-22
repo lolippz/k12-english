@@ -9,9 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.k12english.config.UserContext;
 import com.k12english.domain.CardRecord;
 
-/** 记忆卡片存取。 */
+/** 记忆卡片存取。所有查询按 {@link UserContext} 里的当前用户隔离。 */
 @Repository
 public class CardRepository {
 
@@ -41,7 +42,8 @@ public class CardRepository {
     }
 
     public List<CardRecord> findAll() {
-        return jdbc.query("SELECT " + COLS + " FROM cards", MAPPER);
+        return jdbc.query("SELECT " + COLS + " FROM cards WHERE user_id = ?",
+                MAPPER, UserContext.current());
     }
 
     /**
@@ -60,16 +62,17 @@ public class CardRepository {
 
     public Optional<CardRecord> find(String w) {
         List<CardRecord> rows = jdbc.query(
-                "SELECT " + COLS + " FROM cards WHERE w = ?", MAPPER, w);
+                "SELECT " + COLS + " FROM cards WHERE user_id = ? AND w = ?",
+                MAPPER, UserContext.current(), w);
         return rows.isEmpty() ? Optional.empty() : Optional.of(rows.get(0));
     }
 
     public void save(CardRecord c) {
         jdbc.update("""
-                INSERT INTO cards (w, due, stability, difficulty, elapsed_days, scheduled_days,
+                INSERT INTO cards (user_id, w, due, stability, difficulty, elapsed_days, scheduled_days,
                                    learning_steps, reps, lapses, state, last_review, seen, wrong, first_seen)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT(w) DO UPDATE SET
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(user_id, w) DO UPDATE SET
                     due = excluded.due,
                     stability = excluded.stability,
                     difficulty = excluded.difficulty,
@@ -84,6 +87,7 @@ public class CardRepository {
                     wrong = excluded.wrong,
                     first_seen = excluded.first_seen
                 """,
+                UserContext.current(),
                 c.w(), c.due(), c.stability(), c.difficulty(), c.elapsedDays(), c.scheduledDays(),
                 c.learningSteps(), c.reps(), c.lapses(), c.state(), c.lastReview(), c.seen(),
                 c.wrong(), c.firstSeen());
@@ -96,11 +100,12 @@ public class CardRepository {
     }
 
     public long count() {
-        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM cards", Long.class);
+        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM cards WHERE user_id = ?",
+                Long.class, UserContext.current());
         return n == null ? 0 : n;
     }
 
     public void clear() {
-        jdbc.update("DELETE FROM cards");
+        jdbc.update("DELETE FROM cards WHERE user_id = ?", UserContext.current());
     }
 }

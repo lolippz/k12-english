@@ -8,9 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import tools.jackson.databind.ObjectMapper;
+import com.k12english.config.UserContext;
 import com.k12english.domain.Settings;
 
-/** 设置存取。整体序列化成一段 JSON 存进 kv 表。 */
+/** 设置存取。每个用户一行，整体序列化成一段 JSON。 */
 @Repository
 public class SettingsRepository {
 
@@ -26,7 +27,9 @@ public class SettingsRepository {
     }
 
     public Settings load() {
-        List<String> rows = jdbc.queryForList("SELECT v FROM settings WHERE k = ?", String.class, KEY);
+        List<String> rows = jdbc.queryForList(
+                "SELECT v FROM settings WHERE user_id = ? AND k = ?",
+                String.class, UserContext.current(), KEY);
         if (rows.isEmpty()) {
             return Settings.defaults();
         }
@@ -43,9 +46,9 @@ public class SettingsRepository {
         try {
             String v = json.writeValueAsString(s);
             jdbc.update("""
-                    INSERT INTO settings (k, v) VALUES (?, ?)
-                    ON CONFLICT(k) DO UPDATE SET v = excluded.v
-                    """, KEY, v);
+                    INSERT INTO settings (user_id, k, v) VALUES (?, ?, ?)
+                    ON CONFLICT(user_id, k) DO UPDATE SET v = excluded.v
+                    """, UserContext.current(), KEY, v);
         } catch (Exception e) {
             throw new IllegalStateException("设置序列化失败", e);
         }
@@ -53,6 +56,6 @@ public class SettingsRepository {
     }
 
     public void clear() {
-        jdbc.update("DELETE FROM settings");
+        jdbc.update("DELETE FROM settings WHERE user_id = ?", UserContext.current());
     }
 }

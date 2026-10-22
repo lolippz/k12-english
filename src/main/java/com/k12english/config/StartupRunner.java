@@ -20,6 +20,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.k12english.repo.UserRepository;
+
 /**
  * 启动完成后打印访问地址，并按配置自动打开浏览器。
  *
@@ -36,12 +38,12 @@ public class StartupRunner {
 
     private final AppProperties props;
     private final Environment env;
-    private final AccessToken accessToken;
+    private final UserRepository users;
 
-    public StartupRunner(AppProperties props, Environment env, AccessToken accessToken) {
+    public StartupRunner(AppProperties props, Environment env, UserRepository users) {
         this.props = props;
         this.env = env;
-        this.accessToken = accessToken;
+        this.users = users;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -70,12 +72,9 @@ public class StartupRunner {
     }
 
     /**
-     * 打印口令与监听范围。
+     * 打印监听范围与账号状态。
      *
-     * <p>只在本机访问时这些信息用不上，但一旦开隧道或让手机连同一 WiFi，
-     * 用户就必须知道口令是什么、IP 是多少——所以启动时一次性说清楚。
-     *
-     * <p>监听地址是 {@code 127.0.0.1} 时不再打印局域网地址：那种情况下
+     * <p>监听地址是 {@code 127.0.0.1} 时不打印局域网地址：那种情况下
      * 同网段的其他机器根本连不上，打印出来只会误导。
      */
     private void logAccessInfo(String port) {
@@ -98,13 +97,12 @@ public class StartupRunner {
             }
         }
 
-        if (!accessToken.isEnabled()) {
-            log.warn("访问口令校验已关闭，任何人拿到地址都能使用并改写学习记录");
-            return;
+        long n = users.countUsers();
+        if (n == 0) {
+            log.info("还没有账号：打开页面注册第一个账号，它会自动成为管理员，无需邀请码");
+        } else {
+            log.info("已有 {} 个账号，打开页面登录即可", n);
         }
-
-        log.info("访问口令: {}   （本机 127.0.0.1 免输，重启不变）", accessToken.value());
-        log.info("口令文件: {}", accessToken.file().toAbsolutePath());
     }
 
     /** 列出本机所有非回环、非虚拟网卡的 IPv4 地址。 */

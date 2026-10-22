@@ -47,6 +47,10 @@ public class DataSourceConfig {
         cfg.addDataSourceProperty("journal_mode", "WAL");
         cfg.addDataSourceProperty("busy_timeout", "5000");
         cfg.addDataSourceProperty("foreign_keys", "true");
-        return new HikariDataSource(cfg);
+
+        HikariDataSource ds = new HikariDataSource(cfg);
+        // 老库升级必须赶在 spring.sql.init 之前：先重建老表，再让 schema.sql 补齐新表
+        SchemaMigrator.migrate(ds);
+        return ds;
     }
 }

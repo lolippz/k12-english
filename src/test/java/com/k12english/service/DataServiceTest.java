@@ -131,7 +131,7 @@ class DataServiceTest {
         assertThat(settings.load().newPerDay()).isEqualTo(Settings.defaults().newPerDay());
 
         JdbcTemplate jdbc = TestDatabase.freshJdbc();
-        jdbc.update("INSERT INTO settings (k, v) VALUES ('settings', '{ 这不是 JSON')");
+        jdbc.update("INSERT INTO settings (user_id, k, v) VALUES ('', 'settings', '{ 这不是 JSON')");
         SettingsRepository broken = new SettingsRepository(jdbc, JsonMapper.builder().build());
 
         assertThat(broken.load()).isEqualTo(Settings.defaults());

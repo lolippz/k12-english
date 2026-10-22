@@ -10,9 +10,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.k12english.config.UserContext;
 import com.k12english.domain.ReviewLog;
 
-/** 复习日志存取与学情聚合。 */
+/** 复习日志存取与学情聚合。所有查询按 {@link UserContext} 里的当前用户隔离。 */
 @Repository
 public class LogRepository {
 
@@ -38,16 +39,18 @@ public class LogRepository {
      * 用 {@link GeneratedKeyHolder} 把取值和插入绑在同一条语句里。
      */
     public ReviewLog add(ReviewLog log) {
+        String userId = UserContext.current();
         KeyHolder keys = new GeneratedKeyHolder();
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO logs (w, ts, grade, mode, correct) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO logs (user_id, w, ts, grade, mode, correct) VALUES (?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, log.w());
-            ps.setLong(2, log.ts());
-            ps.setInt(3, log.grade());
-            ps.setString(4, log.mode());
-            ps.setInt(5, log.correct() ? 1 : 0);
+            ps.setString(1, userId);
+            ps.setString(2, log.w());
+            ps.setLong(3, log.ts());
+            ps.setInt(4, log.grade());
+            ps.setString(5, log.mode());
+            ps.setInt(6, log.correct() ? 1 : 0);
             return ps;
         }, keys);
 
@@ -65,17 +68,21 @@ public class LogRepository {
     /** 按时间倒序取最近若干条。 */
     public List<ReviewLog> recent(int limit) {
         return jdbc.query(
-                "SELECT id, w, ts, grade, mode, correct FROM logs ORDER BY ts DESC, id DESC LIMIT ?",
-                MAPPER, limit);
+                "SELECT id, w, ts, grade, mode, correct FROM logs WHERE user_id = ? "
+                        + "ORDER BY ts DESC, id DESC LIMIT ?",
+                MAPPER, UserContext.current(), limit);
     }
 
     public List<ReviewLog> findAll() {
-        return jdbc.query("SELECT id, w, ts, grade, mode, correct FROM logs ORDER BY ts ASC, id ASC",
-                MAPPER);
+        return jdbc.query(
+                "SELECT id, w, ts, grade, mode, correct FROM logs WHERE user_id = ? "
+                        + "ORDER BY ts ASC, id ASC",
+                MAPPER, UserContext.current());
     }
 
     public long count() {
-        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM logs", Long.class);
+        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM logs WHERE user_id = ?",
+                Long.class, UserContext.current());
         return n == null ? 0 : n;
     }
 
@@ -89,23 +96,26 @@ public class LogRepository {
         return jdbc.query(
                 "SELECT date(ts / 1000, 'unixepoch', 'localtime') AS d, "
                         + "COUNT(*) AS n, SUM(correct) AS ok "
-                        + "FROM logs WHERE ts >= ? GROUP BY d ORDER BY d ASC",
+                        + "FROM logs WHERE user_id = ? AND ts >= ? GROUP BY d ORDER BY d ASC",
                 (rs, i) -> new Object[] { rs.getString("d"), rs.getLong("n"), rs.getLong("ok") },
-                sinceTs);
+                UserContext.current(), sinceTs);
     }
 
     /** 有学习记录的全部本地日期，按倒序。用于算连续打卡。 */
     public List<String> distinctDaysDesc() {
         return jdbc.queryForList(
                 "SELECT DISTINCT date(ts / 1000, 'unixepoch', 'localtime') AS d "
-                        + "FROM logs ORDER BY d DESC",
-                String.class);
+                        + "FROM logs WHERE user_id = ? ORDER BY d DESC",
+                String.class, UserContext.current());
     }
 
     /** 累计作答数与答对数。 */
     public long[] totalAndCorrect() {
-        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM logs", Long.class);
-        Long ok = jdbc.queryForObject("SELECT COALESCE(SUM(correct), 0) FROM logs", Long.class);
+        Long n = jdbc.queryForObject("SELECT COUNT(*) FROM logs WHERE user_id = ?",
+                Long.class, UserContext.current());
+        Long ok = jdbc.queryForObject(
+                "SELECT COALESCE(SUM(correct), 0) FROM logs WHERE user_id = ?",
+                Long.class, UserContext.current());
         return new long[] { n == null ? 0 : n, ok == null ? 0 : ok };
     }
 
@@ -113,12 +123,13 @@ public class LogRepository {
     public List<Object[]> topWrongWords(int limit) {
         return jdbc.query(
                 "SELECT w, COUNT(*) AS n, SUM(CASE WHEN correct = 0 THEN 1 ELSE 0 END) AS wrong "
-                        + "FROM logs GROUP BY w HAVING wrong > 0 ORDER BY wrong DESC, n DESC LIMIT ?",
+                        + "FROM logs WHERE user_id = ? GROUP BY w HAVING wrong > 0 "
+                        + "ORDER BY wrong DESC, n DESC LIMIT ?",
                 (rs, i) -> new Object[] { rs.getString("w"), rs.getLong("n"), rs.getLong("wrong") },
-                limit);
+                UserContext.current(), limit);
     }
 
     public void clear() {
-        jdbc.update("DELETE FROM logs");
+        jdbc.update("DELETE FROM logs WHERE user_id = ?", UserContext.current());
     }
 }
