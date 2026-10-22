@@ -236,24 +236,7 @@ export default function App() {
         </>
       )}
 
-      {toast && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 24,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'var(--text)',
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: 10,
-            fontSize: 14,
-            zIndex: 50,
-          }}
-        >
-          {toast}
-        </div>
-      )}
+      {toast && <div className="toast">{toast}</div>}
     </div>
   )
 }

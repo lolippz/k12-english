@@ -1,9 +1,16 @@
 package com.k12english.config;
 
 import java.awt.Desktop;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.URI;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +36,23 @@ public class StartupRunner {
 
     private final AppProperties props;
     private final Environment env;
+    private final AccessToken accessToken;
 
-    public StartupRunner(AppProperties props, Environment env) {
+    public StartupRunner(AppProperties props, Environment env, AccessToken accessToken) {
         this.props = props;
         this.env = env;
+        this.accessToken = accessToken;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onReady() {
         warnIfFrontendMissing();
 
-        String url = "http://127.0.0.1:" + env.getProperty("local.server.port", "8080");
-        log.info("英语学习平台已就绪，浏览器访问 {}", url);
+        String port = env.getProperty("local.server.port", "8080");
+        String url = "http://127.0.0.1:" + port;
+        log.info("英语学习平台已就绪，本机访问 {}", url);
         log.info("学习进度库: {}", props.databaseFile().toAbsolutePath());
+        logAccessInfo(port);
 
         if (!props.isOpenBrowser()) {
             return;
@@ -56,6 +67,51 @@ public class StartupRunner {
             // 打不开浏览器不影响使用，用户手动访问即可
             log.warn("自动打开浏览器失败，请手动访问 {}（{}）", url, e.getMessage());
         }
+    }
+
+    /**
+     * 打印口令与局域网地址。
+     *
+     * <p>只在本机访问时这些信息用不上，但一旦用 {@code share.bat} 开隧道或让手机连同一 WiFi，
+     * 用户就必须知道口令是什么、IP 是多少——所以启动时一次性说清楚。
+     */
+    private void logAccessInfo(String port) {
+        if (!accessToken.isEnabled()) {
+            log.warn("访问口令校验已关闭，任何人拿到地址都能使用并改写学习记录");
+            return;
+        }
+
+        log.info("访问口令: {}   （本机 127.0.0.1 免输，重启不变）", accessToken.value());
+        log.info("口令文件: {}", accessToken.file().toAbsolutePath());
+
+        List<String> lan = lanAddresses();
+        if (lan.isEmpty()) {
+            log.info("没检测到局域网 IPv4 地址（可能没连网络）");
+        } else {
+            for (String ip : lan) {
+                log.info("局域网访问: http://{}:{}  （手机/平板连同一 WiFi 可直接打开）", ip, port);
+            }
+        }
+    }
+
+    /** 列出本机所有非回环、非虚拟网卡的 IPv4 地址。 */
+    private static List<String> lanAddresses() {
+        List<String> result = new ArrayList<>();
+        try {
+            for (NetworkInterface nif : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                if (!nif.isUp() || nif.isLoopback() || nif.isVirtual()) {
+                    continue;
+                }
+                for (InetAddress addr : Collections.list(nif.getInetAddresses())) {
+                    if (addr instanceof Inet4Address && addr.isSiteLocalAddress()) {
+                        result.add(addr.getHostAddress());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            log.debug("枚举网卡失败: {}", e.getMessage());
+        }
+        return result;
     }
 
     /**

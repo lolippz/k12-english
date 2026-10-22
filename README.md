@@ -70,8 +70,79 @@ java -jar target/k12-english.jar
 | `--server.port=8080` | 8080 | 监听端口 |
 | `--app.open-browser=false` | true | 启动后不自动开浏览器 |
 | `--app.data-dir=<路径>` | `~/.k12-english` | 进度库所在目录 |
+| `--app.access-token=<口令>` | 自动生成 | 局域网/公网访问口令；`off` 表示关闭校验 |
 
 进度库放在用户目录而不是安装目录，这样换版本、换 jar 都不会丢学习记录。
+
+---
+
+## 手机 / 平板 / 在线访问
+
+同一份页面，三档自适应，不做单独的移动版：
+
+| 宽度 | 布局 |
+|---|---|
+| ≤ 560px | **手机**：选项与评分按钮转单列（评分 2×2），统计卡压成一行三格，错词列表的翻译独占一行，顶栏只留三个导航 |
+| 561–820px | **平板竖屏 / 大屏手机**：保持三格统计，错词列表允许换行，题卡内边距收窄 |
+| 821–1080px | **平板横屏 / 小笔记本**：接近桌面布局，仅收窄外边距 |
+| ≥ 1081px | **桌面**：完整布局，正文 860px（学情页 1040px）居中 |
+
+实测 390 / 768 / 1024 / 1400 四档，`scrollWidth` 均等于 `clientWidth`，无横向溢出。
+触屏设备上按钮最小高度 40px（主按钮 48px），输入框字号 ≥ 16px —— 后者是 iOS 的临界值，
+小于它聚焦时会自动放大整个页面。
+
+### 局域网访问（同一 WiFi）
+
+服务默认监听 `0.0.0.0`，启动日志会直接打印局域网地址：
+
+```
+局域网访问: http://192.168.1.7:8080  （手机/平板连同一 WiFi 可直接打开）
+```
+
+首次访问时 Windows 防火墙可能弹窗，勾选「专用网络」允许即可。
+
+### 公网访问（外网也能开）
+
+用 Cloudflare 隧道：不用买服务器、不用备案、免费且不限流量。
+
+```bat
+winget install --id Cloudflare.cloudflared -e    :: 只需装一次（约 40MB）
+share.bat                                        :: 起服务 + 开隧道
+```
+
+窗口里会打印一条带口令的完整地址，直接发出去即可：
+
+```
+https://xxxx-xxxx-xxxx.trycloudflare.com/?k=AbCdEfGhJkLm
+```
+
+- 隧道是**出站连接**，家里 IP 变了不影响
+- 关掉那个窗口 = 公网访问断开（本机服务还在另一个最小化窗口里跑）
+- 免费版隧道**没有可用性保证**，重启一次域名就变
+
+### 访问口令
+
+本项目原本是纯单机应用，没有账号体系。一旦挂到公网，拿到链接的人就能直接调用 API
+改写学习记录，所以加了一层口令闸门：
+
+- 首次启动自动生成 12 位口令，保存在 `~/.k12-english/access.token`，**重启不变**
+- 启动日志里会打印 `访问口令: xxxxxxxxxxxx`
+- **本机 127.0.0.1 直连免输**，日常使用完全无感
+- 局域网 / 公网访问需要输一次，之后靠 Cookie 记住 30 天
+- 带 `?k=口令` 的链接会自动登录，并把 `k` 从地址栏抹掉（避免留在浏览历史与 Referer 里）
+
+口令字符表去掉了 `0 O 1 l I` 和 shell 特殊字符，方便手输，也能安全拼进 `share.bat`。
+
+- 换口令：删掉 `~/.k12-english/access.token` 后重启，会重新生成
+- 关掉校验：`--app.access-token=off`（**不建议**，公网暴露时等于没有保护）
+
+> **判定「本机直连」时不仅看 `remoteAddr` 是不是回环**，还要求**没有**
+> `X-Forwarded-For` / `CF-Connecting-IP` 这类代理头。因为 cloudflared 和 nginx 都跑在本机，
+> 它们转发过来的请求 `remoteAddr` 同样是 127.0.0.1；只看回环的话，公网流量会被误判成
+> 本机而直接放行。
+
+> 口令 12 位、字符表 56 个字符，约 70 bit 熵，暴力猜解不可行；但没有做失败次数锁定。
+> 如果要把链接发到公开群，建议用 `--app.access-token=<更长的自定义口令>`。
 
 ---
 
@@ -128,6 +199,7 @@ cd frontend && npm run build   # 产出 frontend/dist，Maven 打包时自动复
 ├── pom.xml                     Maven 构建（Spring Boot 4 / Java 17）
 ├── mvnw, mvnw.cmd              Maven Wrapper，无需预装 Maven
 ├── start.bat / start.sh        一键启动（缺什么补什么）
+├── share.bat                   起服务 + Cloudflare 隧道，出公网链接
 ├── .run/                       IDEA 共享运行配置（后端 / 前端 / 全栈）
 ├── .github/workflows/          CI 与 Release 工作流
 ├── data/
@@ -135,11 +207,11 @@ cd frontend && npm run build   # 产出 frontend/dist，Maven 打包时自动复
 ├── docs/                       立项方案与实施方案
 ├── src/main/java/com/k12english/
 │   ├── K12EnglishApplication   入口
-│   ├── config/                 配置属性、SQLite 数据源、启动后开浏览器
+│   ├── config/                 配置属性、访问口令、SQLite 数据源、启动提示
 │   ├── domain/                 Word / CardRecord / ReviewLog / Settings
 │   ├── repo/                   JdbcTemplate 数据访问
 │   ├── service/                词库、学习队列、学情聚合、数据管理
-│   └── web/                    REST 控制器 + 统一异常处理
+│   └── web/                    REST 控制器 + 口令闸门 + 统一异常处理
 ├── src/main/resources/
 │   ├── application.yml         配置
 │   └── schema.sql              建表脚本（幂等）

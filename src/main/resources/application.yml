@@ -39,6 +39,10 @@ app:
   data-dir: ${user.home}/.k12-english
   port: 8080
   open-browser: true
+  # 访问口令：留空 = 首次启动自动生成并保存到 data-dir/access.token（重启不变）；
+  # 设为 off = 关闭校验（仅建议纯本机使用）；填具体值 = 直接用该值。
+  # 本机 127.0.0.1 直连始终免输，日常使用无感；局域网与公网访问需要输一次。
+  access-token: ${app.access.token:}
 
 logging:
   level:
