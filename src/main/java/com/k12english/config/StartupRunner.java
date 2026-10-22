@@ -70,12 +70,34 @@ public class StartupRunner {
     }
 
     /**
-     * 打印口令与局域网地址。
+     * 打印口令与监听范围。
      *
-     * <p>只在本机访问时这些信息用不上，但一旦用 {@code share.bat} 开隧道或让手机连同一 WiFi，
+     * <p>只在本机访问时这些信息用不上，但一旦开隧道或让手机连同一 WiFi，
      * 用户就必须知道口令是什么、IP 是多少——所以启动时一次性说清楚。
+     *
+     * <p>监听地址是 {@code 127.0.0.1} 时不再打印局域网地址：那种情况下
+     * 同网段的其他机器根本连不上，打印出来只会误导。
      */
     private void logAccessInfo(String port) {
+        String bind = env.getProperty("server.address", "");
+        boolean loopbackOnly = "127.0.0.1".equals(bind)
+                || "::1".equals(bind)
+                || "localhost".equalsIgnoreCase(bind);
+
+        if (loopbackOnly) {
+            log.info("监听地址: {}（仅本机可访问，同网段的其他机器看不到这个端口）", bind);
+        } else {
+            log.info("监听地址: {}（已开放局域网，同网段设备可访问）", bind.isEmpty() ? "0.0.0.0" : bind);
+            List<String> lan = lanAddresses();
+            if (lan.isEmpty()) {
+                log.info("没检测到局域网 IPv4 地址（可能没连网络）");
+            } else {
+                for (String ip : lan) {
+                    log.info("局域网访问: http://{}:{}  （手机/平板连同一 WiFi 可直接打开）", ip, port);
+                }
+            }
+        }
+
         if (!accessToken.isEnabled()) {
             log.warn("访问口令校验已关闭，任何人拿到地址都能使用并改写学习记录");
             return;
@@ -83,15 +105,6 @@ public class StartupRunner {
 
         log.info("访问口令: {}   （本机 127.0.0.1 免输，重启不变）", accessToken.value());
         log.info("口令文件: {}", accessToken.file().toAbsolutePath());
-
-        List<String> lan = lanAddresses();
-        if (lan.isEmpty()) {
-            log.info("没检测到局域网 IPv4 地址（可能没连网络）");
-        } else {
-            for (String ip : lan) {
-                log.info("局域网访问: http://{}:{}  （手机/平板连同一 WiFi 可直接打开）", ip, port);
-            }
-        }
     }
 
     /** 列出本机所有非回环、非虚拟网卡的 IPv4 地址。 */

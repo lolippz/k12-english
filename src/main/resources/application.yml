@@ -1,4 +1,9 @@
 server:
+  # 监听地址。默认只绑回环 —— 本机使用和走 Cloudflare 隧道都够用
+  # （cloudflared 就在本机，连的就是 127.0.0.1）。
+  # 这样服务不会出现在办公网/家用网的其他机器上，同事扫不到这个端口。
+  # 要让手机/平板在同一 WiFi 里直连，显式开放：--app.bind=0.0.0.0
+  address: ${app.bind:127.0.0.1}
   port: ${app.port:8080}
   compression:
     enabled: true
