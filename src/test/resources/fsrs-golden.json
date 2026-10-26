@@ -1,0 +1,887 @@
+{
+  "version": "5.4.2",
+  "baseTime": 1767600000000,
+  "scenarios": [
+    {
+      "name": "preview-new-fuzz-on",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": true,
+        "enable_short_term": true
+      },
+      "type": "preview",
+      "at": 0,
+      "initial": {
+        "due": 1767600000000,
+        "stability": 0,
+        "difficulty": 0,
+        "elapsed_days": 0,
+        "scheduled_days": 0,
+        "learning_steps": 0,
+        "reps": 0,
+        "lapses": 0,
+        "state": 0,
+        "last_review": null
+      },
+      "results": {
+        "1": {
+          "card": {
+            "due": 1767600060000,
+            "stability": 0.212,
+            "difficulty": 6.4133,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 1,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "2": {
+          "card": {
+            "due": 1767600360000,
+            "stability": 1.2931,
+            "difficulty": 5.11217071,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 2,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "3": {
+          "card": {
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "4": {
+          "card": {
+            "due": 1768377600000,
+            "stability": 8.2956,
+            "difficulty": 1,
+            "elapsed_days": 0,
+            "scheduled_days": 9,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 4,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        }
+      }
+    },
+    {
+      "name": "preview-new-fuzz-off",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": false,
+        "enable_short_term": true
+      },
+      "type": "preview",
+      "at": 0,
+      "initial": {
+        "due": 1767600000000,
+        "stability": 0,
+        "difficulty": 0,
+        "elapsed_days": 0,
+        "scheduled_days": 0,
+        "learning_steps": 0,
+        "reps": 0,
+        "lapses": 0,
+        "state": 0,
+        "last_review": null
+      },
+      "results": {
+        "1": {
+          "card": {
+            "due": 1767600060000,
+            "stability": 0.212,
+            "difficulty": 6.4133,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 1,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "2": {
+          "card": {
+            "due": 1767600360000,
+            "stability": 1.2931,
+            "difficulty": 5.11217071,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 2,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "3": {
+          "card": {
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "4": {
+          "card": {
+            "due": 1768291200000,
+            "stability": 8.2956,
+            "difficulty": 1,
+            "elapsed_days": 0,
+            "scheduled_days": 8,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 4,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        }
+      }
+    },
+    {
+      "name": "preview-new-longterm",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": false,
+        "enable_short_term": false
+      },
+      "type": "preview",
+      "at": 0,
+      "initial": {
+        "due": 1767600000000,
+        "stability": 0,
+        "difficulty": 0,
+        "elapsed_days": 0,
+        "scheduled_days": 0,
+        "learning_steps": 0,
+        "reps": 0,
+        "lapses": 0,
+        "state": 0,
+        "last_review": null
+      },
+      "results": {
+        "1": {
+          "card": {
+            "due": 1767686400000,
+            "stability": 0.212,
+            "difficulty": 6.4133,
+            "elapsed_days": 0,
+            "scheduled_days": 1,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 1,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "2": {
+          "card": {
+            "due": 1767772800000,
+            "stability": 1.2931,
+            "difficulty": 5.11217071,
+            "elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 2,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "3": {
+          "card": {
+            "due": 1767859200000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "scheduled_days": 3,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        "4": {
+          "card": {
+            "due": 1768291200000,
+            "stability": 8.2956,
+            "difficulty": 1,
+            "elapsed_days": 0,
+            "scheduled_days": 8,
+            "learning_steps": 0,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 4,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        }
+      }
+    },
+    {
+      "name": "chain-good-basic",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": false,
+        "enable_short_term": true
+      },
+      "type": "sequence",
+      "records": [
+        {
+          "at": 0,
+          "grade": 3,
+          "card": {
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        {
+          "at": 60000,
+          "grade": 3,
+          "card": {
+            "due": 1767772860000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600060000
+          },
+          "log": {
+            "rating": 3,
+            "state": 1,
+            "due": 1767600000000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "review": 1767600060000
+          }
+        },
+        {
+          "at": 600000,
+          "grade": 3,
+          "card": {
+            "due": 1767859800000,
+            "stability": 2.3065,
+            "difficulty": 2.1043314,
+            "elapsed_days": 0,
+            "scheduled_days": 3,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600600000
+          },
+          "log": {
+            "rating": 3,
+            "state": 2,
+            "due": 1767600060000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767600600000
+          }
+        },
+        {
+          "at": 86400000,
+          "grade": 3,
+          "card": {
+            "due": 1768291200000,
+            "stability": 7.3230675,
+            "difficulty": 2.09745544,
+            "elapsed_days": 1,
+            "scheduled_days": 7,
+            "learning_steps": 0,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767686400000
+          },
+          "log": {
+            "rating": 3,
+            "state": 2,
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.1043314,
+            "elapsed_days": 1,
+            "last_elapsed_days": 0,
+            "scheduled_days": 3,
+            "learning_steps": 0,
+            "review": 1767686400000
+          }
+        },
+        {
+          "at": 345600000,
+          "grade": 3,
+          "card": {
+            "due": 1769673600000,
+            "stability": 19.86048124,
+            "difficulty": 2.09058635,
+            "elapsed_days": 3,
+            "scheduled_days": 20,
+            "learning_steps": 0,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767945600000
+          },
+          "log": {
+            "rating": 3,
+            "state": 2,
+            "due": 1767686400000,
+            "stability": 7.3230675,
+            "difficulty": 2.09745544,
+            "elapsed_days": 3,
+            "last_elapsed_days": 1,
+            "scheduled_days": 7,
+            "learning_steps": 0,
+            "review": 1767945600000
+          }
+        },
+        {
+          "at": 864000000,
+          "grade": 3,
+          "card": {
+            "due": 1772092800000,
+            "stability": 42.03266673,
+            "difficulty": 2.08372413,
+            "elapsed_days": 6,
+            "scheduled_days": 42,
+            "learning_steps": 0,
+            "reps": 6,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1768464000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 2,
+            "due": 1767945600000,
+            "stability": 19.86048124,
+            "difficulty": 2.09058635,
+            "elapsed_days": 6,
+            "last_elapsed_days": 3,
+            "scheduled_days": 20,
+            "learning_steps": 0,
+            "review": 1768464000000
+          }
+        }
+      ]
+    },
+    {
+      "name": "chain-mixed",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": false,
+        "enable_short_term": true
+      },
+      "type": "sequence",
+      "records": [
+        {
+          "at": 0,
+          "grade": 3,
+          "card": {
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 1,
+            "last_review": 1767600000000
+          },
+          "log": {
+            "rating": 3,
+            "state": 0,
+            "due": 1767600000000,
+            "stability": 0,
+            "difficulty": 0,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600000000
+          }
+        },
+        {
+          "at": 60000,
+          "grade": 3,
+          "card": {
+            "due": 1767772860000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767600060000
+          },
+          "log": {
+            "rating": 3,
+            "state": 1,
+            "due": 1767600000000,
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 1,
+            "review": 1767600060000
+          }
+        },
+        {
+          "at": 600000,
+          "grade": 1,
+          "card": {
+            "due": 1767601200000,
+            "stability": 0.77508398,
+            "difficulty": 7.39223814,
+            "elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 1,
+            "state": 3,
+            "last_review": 1767600600000
+          },
+          "log": {
+            "rating": 1,
+            "state": 2,
+            "due": 1767600060000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767600600000
+          }
+        },
+        {
+          "at": 660000,
+          "grade": 3,
+          "card": {
+            "due": 1767687060000,
+            "stability": 0.8281648,
+            "difficulty": 7.38007427,
+            "elapsed_days": 0,
+            "scheduled_days": 1,
+            "learning_steps": 0,
+            "reps": 4,
+            "lapses": 1,
+            "state": 2,
+            "last_review": 1767600660000
+          },
+          "log": {
+            "rating": 3,
+            "state": 3,
+            "due": 1767600600000,
+            "stability": 0.77508398,
+            "difficulty": 7.39223814,
+            "elapsed_days": 0,
+            "last_elapsed_days": 0,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "review": 1767600660000
+          }
+        },
+        {
+          "at": 173460000,
+          "grade": 1,
+          "card": {
+            "due": 1767774060000,
+            "stability": 0.29884434,
+            "difficulty": 9.12407659,
+            "elapsed_days": 2,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 5,
+            "lapses": 2,
+            "state": 3,
+            "last_review": 1767773460000
+          },
+          "log": {
+            "rating": 1,
+            "state": 2,
+            "due": 1767600660000,
+            "stability": 0.8281648,
+            "difficulty": 7.38007427,
+            "elapsed_days": 2,
+            "last_elapsed_days": 0,
+            "scheduled_days": 1,
+            "learning_steps": 0,
+            "review": 1767773460000
+          }
+        }
+      ]
+    },
+    {
+      "name": "preview-review-fuzz-on",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": true,
+        "enable_short_term": true
+      },
+      "type": "preview",
+      "at": 259200000,
+      "initial": {
+        "due": 1767773400000,
+        "stability": 2.3065,
+        "difficulty": 2.11121424,
+        "elapsed_days": 0,
+        "scheduled_days": 2,
+        "learning_steps": 0,
+        "reps": 2,
+        "lapses": 0,
+        "state": 2,
+        "last_review": 1767600600000
+      },
+      "results": {
+        "1": {
+          "card": {
+            "due": 1767859800000,
+            "stability": 0.63697811,
+            "difficulty": 7.39223814,
+            "elapsed_days": 3,
+            "scheduled_days": 0,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 1,
+            "state": 3,
+            "last_review": 1767859200000
+          },
+          "log": {
+            "rating": 1,
+            "state": 2,
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 3,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767859200000
+          }
+        },
+        "2": {
+          "card": {
+            "due": 1768550400000,
+            "stability": 9.24024489,
+            "difficulty": 4.74828477,
+            "elapsed_days": 3,
+            "scheduled_days": 8,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767859200000
+          },
+          "log": {
+            "rating": 2,
+            "state": 2,
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 3,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767859200000
+          }
+        },
+        "3": {
+          "card": {
+            "due": 1768982400000,
+            "stability": 13.8358397,
+            "difficulty": 2.1043314,
+            "elapsed_days": 3,
+            "scheduled_days": 13,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767859200000
+          },
+          "log": {
+            "rating": 3,
+            "state": 2,
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 3,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767859200000
+          }
+        },
+        "4": {
+          "card": {
+            "due": 1769760000000,
+            "stability": 23.89980032,
+            "difficulty": 1,
+            "elapsed_days": 3,
+            "scheduled_days": 22,
+            "learning_steps": 0,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2,
+            "last_review": 1767859200000
+          },
+          "log": {
+            "rating": 4,
+            "state": 2,
+            "due": 1767600600000,
+            "stability": 2.3065,
+            "difficulty": 2.11121424,
+            "elapsed_days": 3,
+            "last_elapsed_days": 0,
+            "scheduled_days": 2,
+            "learning_steps": 0,
+            "review": 1767859200000
+          }
+        }
+      }
+    },
+    {
+      "name": "retrievability-review",
+      "config": {
+        "request_retention": 0.9,
+        "enable_fuzz": false,
+        "enable_short_term": true
+      },
+      "type": "retrievability",
+      "initial": {
+        "due": 1767773400000,
+        "stability": 2.3065,
+        "difficulty": 2.11121424,
+        "elapsed_days": 0,
+        "scheduled_days": 2,
+        "learning_steps": 0,
+        "reps": 2,
+        "lapses": 0,
+        "state": 2,
+        "last_review": 1767600600000
+      },
+      "results": [
+        {
+          "at": 0,
+          "value": 1
+        },
+        {
+          "at": 86400000,
+          "value": 1
+        },
+        {
+          "at": 259200000,
+          "value": 0.90949326
+        },
+        {
+          "at": 604800000,
+          "value": 0.82252795
+        }
+      ]
+    }
+  ]
+}
