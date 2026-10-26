@@ -68,6 +68,13 @@ public class AuthFilter extends OncePerRequestFilter {
                 return;
             }
 
+            // 词库是公开内容（词条/音标/释义，无个人数据），必须放行：
+            // 前端 main.tsx 在渲染登录页之前就要拉词库，拦了会导致未登录时启动直接 401
+            if (path.equals("/api/words")) {
+                chain.doFilter(req, res);
+                return;
+            }
+
             if (user.isEmpty()) {
                 writeJson(res, HttpServletResponse.SC_UNAUTHORIZED, "{\"error\":\"未登录\"}");
                 return;
