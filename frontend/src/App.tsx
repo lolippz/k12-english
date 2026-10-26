@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { api } from './lib/api'
+import { api, ApiError, type UserInfo } from './lib/api'
 import { newCard, review as applyReview, type CardRecord, type Grade } from './lib/srs'
 import { DEFAULT_SETTINGS, type LogEntry, type Settings } from './lib/types'
 import { loadVoices, stopAll } from './lib/speech'
@@ -7,8 +7,10 @@ import Home from './pages/Home'
 import Study from './pages/Study'
 import Stats from './pages/Stats'
 import SettingsPage from './pages/Settings'
+import Login from './pages/Login'
+import Admin from './pages/Admin'
 
-export type Tab = 'home' | 'stats' | 'settings'
+export type Tab = 'home' | 'stats' | 'settings' | 'admin'
 
 export interface SessionState {
   queue: string[]
@@ -22,22 +24,42 @@ export default function App() {
   const [ready, setReady] = useState(false)
   const [bootError, setBootError] = useState('')
   const [tab, setTab] = useState<Tab>('home')
+  const [user, setUser] = useState<UserInfo | null>(null)
+  /** 库里是否已有账号：决定登录页是否需要邀请码 */
+  const [hasUsers, setHasUsers] = useState(true)
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS)
   const [cards, setCards] = useState<Map<string, CardRecord>>(new Map())
   const [session, setSession] = useState<SessionState | null>(null)
   const [toast, setToast] = useState('')
 
-  /* ---------- 初始化：向后端要一次本机状态 ---------- */
+  /* ---------- 初始化：先确认登录态，再拉本机状态 ---------- */
+  const loadData = useCallback(async () => {
+    const st = await api.state()
+    setSettings({ ...DEFAULT_SETTINGS, ...st.settings })
+    setCards(new Map(st.cards.map((c) => [c.w, c])))
+    loadVoices()
+  }, [])
+
   useEffect(() => {
     ;(async () => {
-      const st = await api.state()
-      setSettings({ ...DEFAULT_SETTINGS, ...st.settings })
-      setCards(new Map(st.cards.map((c) => [c.w, c])))
-      loadVoices()
-    })()
-      .catch((e: Error) => setBootError(e.message))
-      .finally(() => setReady(true))
-  }, [])
+      try {
+        const me = await api.me()
+        setUser(me)
+        await loadData()
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 401) {
+          // 未登录是正常流程，展示登录页
+          try {
+            setHasUsers((await api.authStatus()).hasUsers)
+          } catch {
+            /* 后端不可达时保留默认值，登录页会再次暴露错误 */
+          }
+        } else {
+          setBootError((e as Error).message)
+        }
+      }
+    })().finally(() => setReady(true))
+  }, [loadData])
 
   const flash = useCallback((msg: string) => {
     setToast(msg)
@@ -138,6 +160,34 @@ export default function App() {
     }
   }, [flash])
 
+  /* ---------- 登录 / 退出 ---------- */
+  const handleAuthed = useCallback(
+    async (u: UserInfo) => {
+      setUser(u)
+      setTab('home')
+      try {
+        await loadData()
+      } catch (e) {
+        setBootError((e as Error).message)
+      }
+    },
+    [loadData],
+  )
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await api.logout()
+    } catch {
+      /* 会话可能已失效，忽略 */
+    }
+    stopAll()
+    setUser(null)
+    setCards(new Map())
+    setSession(null)
+    setTab('home')
+    setHasUsers(true)
+  }, [])
+
   const currentWord = useMemo(() => {
     if (!session) return null
     return session.queue[session.idx] ?? null
@@ -169,6 +219,10 @@ export default function App() {
     )
   }
 
+  if (!user) {
+    return <Login hasUsers={hasUsers} onAuthed={handleAuthed} />
+  }
+
   return (
     <div className="shell">
       <div className="topbar">
@@ -185,6 +239,15 @@ export default function App() {
           <button className={tab === 'settings' ? 'on' : ''} onClick={() => { exitSession(); setTab('settings') }}>
             设置
           </button>
+          {user.admin && (
+            <button className={tab === 'admin' ? 'on' : ''} onClick={() => { exitSession(); setTab('admin') }}>
+              管理
+            </button>
+          )}
+          <span className="muted" style={{ fontSize: 13, alignSelf: 'center', margin: '0 4px' }}>
+            {user.username}
+          </span>
+          <button onClick={handleLogout}>退出</button>
         </div>
       </div>
 
@@ -218,6 +281,7 @@ export default function App() {
             <Home
               settings={settings}
               cardCount={cards.size}
+              username={user.username}
               onStart={startSession}
               onGoSettings={() => setTab('settings')}
             />
@@ -233,6 +297,7 @@ export default function App() {
               onReset={resetAll}
             />
           )}
+          {tab === 'admin' && user.admin && <Admin me={user} flash={flash} />}
         </>
       )}
 

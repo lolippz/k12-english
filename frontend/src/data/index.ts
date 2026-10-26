@@ -76,7 +76,7 @@ export const STAGE_LABEL: Record<Stage, string> = {
 }
 
 export const STAGE_DESC: Record<Stage, string> = {
-  primary: '人教版 PEP / 新起点 全册',
+  primary: '人教版 PEP / 新起点 · 重大版（三年级起点）',
   junior: '人教版 七上 — 九年级',
   senior: '人教版 必修 1-5 · 选修 6-11',
 }

@@ -5,7 +5,7 @@
 
 - **前端**：React 19 + TypeScript + Vite
 - **后端**：Java 17 + Spring Boot 4 + SQLite
-- **词库**：6877 词条（人教版 PEP / 新起点 / 人教初中 / 高中必修选修），含音标、释义、词形变化、考试标签、中英例句、离线发音音频
+- **词库**：6887 词条（人教版 PEP / 新起点 / 人教初中 / 高中必修选修 / 重大版小学三年级起点），含音标、释义、词形变化、考试标签、中英例句、离线发音音频
 - **记忆算法**：FSRS（Free Spaced Repetition Scheduler）
 
 ---
@@ -48,14 +48,14 @@ java -jar target/k12-english.jar
 > 条件激活的，所以跳过第 1 步 `mvn package` 也会成功，只是打出来的 jar 里没有界面。
 > 真出现这种情况，启动日志会打一条醒目警告告诉你。
 
-> **关于首次构建耗时。** 打包时要把 6877 个发音 mp3 复制进 `target/classes`。
+> **关于首次构建耗时。** 打包时要把 6887 个发音 mp3 复制进 `target/classes`。
 > 在普通机器上这一步是几十秒；但在开启杀毒软件实时扫描的 Windows 上，
 > 小文件复制会慢得离谱（实测约 16 个/秒，整次冷构建 10 分钟）。
 > 这是文件系统层面的开销，不是构建配置的问题 ——
 > **增量构建（`target/` 已存在）只要约 45 秒**，所以平时不要随便 `mvn clean`。
 > 想彻底解决就给项目目录加一条杀毒软件排除项。
 
-仓库里已经提交了 `data/words.json` 和 6877 个发音 mp3，
+仓库里已经提交了 `data/words.json` 和 6887 个发音 mp3，
 所以**全新 clone 不需要跑任何数据脚本就能直接构建运行**
 （已实测：仅用提交内容还原一份全新 clone，`./mvnw package` 构建成功，
 产出的 jar 启动后首页 / 接口 / 音频均正常）。
@@ -222,7 +222,7 @@ cd frontend && npm run build   # 产出 frontend/dist，Maven 打包时自动复
 ├── .run/                       IDEA 共享运行配置（后端 / 前端 / 全栈）
 ├── .github/workflows/          CI 与 Release 工作流
 ├── data/
-│   └── words.json              词库本体（已提交，6877 词条 / 2.8 MB）
+│   └── words.json              词库本体（已提交，6887 词条）
 ├── docs/                       立项方案与实施方案
 ├── src/main/java/com/k12english/
 │   ├── K12EnglishApplication   入口
@@ -239,7 +239,7 @@ cd frontend && npm run build   # 产出 frontend/dist，Maven 打包时自动复
 │   ├── src/lib/api.ts          后端接口客户端
 │   ├── src/lib/srs.ts          FSRS 调度（ts-fsrs）
 │   ├── src/pages/              今日 / 学情 / 设置 / 答题
-│   ├── public/audio/           6877 个发音 mp3
+│   ├── public/audio/           6887 个发音 mp3
 │   ├── smoke.mjs               前端冒烟测试（词库质量 + FSRS）
 │   └── smoke-api.mjs           前后端契约测试
 ├── scripts/
@@ -320,10 +320,10 @@ python gen_audio.py --prune   # 清理已不在词表里的孤儿音频
 
 | 指标 | 数值 |
 |---|---|
-| 词条数 | 6877（原始 7016，清洗合并掉 139） |
+| 词条数 | 6887（原始 7016 + 重大版 10，清洗合并掉 139） |
 | 音标覆盖 | 98.9%（缺的主要是缩写与人名） |
 | 例句覆盖 | 61.6%（4235 条） |
-| 发音音频 | 6877 / 6877，20.5 MB |
+| 发音音频 | 6887 / 6887，20.6 MB |
 | 词形变化 | 4207 条 |
 | 考试标签 | 4936 条 |
 

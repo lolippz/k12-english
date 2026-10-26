@@ -25,7 +25,7 @@ import com.k12english.domain.Word;
 /**
  * 词库服务。启动时一次性把 words.json 读进内存，之后所有筛选都在内存里做。
  *
- * <p>6877 个词条约占 8 MB 堆内存，换来的是零查询延迟——单机应用这个交换很划算。
+ * <p>6887 个词条约占 8 MB 堆内存，换来的是零查询延迟——单机应用这个交换很划算。
  *
  * <p>数据文件由 Maven 的 {@code with-words} profile 从 {@code tools/out/words.json}
  * 复制到 classpath 的 {@code data/} 下。

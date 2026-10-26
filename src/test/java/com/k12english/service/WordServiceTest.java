@@ -72,15 +72,15 @@ class WordServiceTest {
     }
 
     @Test
-    @DisplayName("真实词库：跑过数据流水线时应为 6877 条")
+    @DisplayName("真实词库：跑过数据流水线时应为 6887 条（6877 + 重大版新增 10）")
     void realDictionary() {
         WordService ws = WordServices.real();
         // 没跑过 tools 流水线时词库为空，跳过而不是失败——保证全新 clone 上 mvn test 也能过
         assumeTrue(ws.size() > 0, "未找到 data/words.json，跳过真实词库断言");
 
-        assertThat(ws.size()).isEqualTo(6877);
+        assertThat(ws.size()).isEqualTo(6887);
         assertThat(ws.allStages()).containsExactly("primary", "junior", "senior");
         assertThat(ws.ofStages(List.of("primary"))).isNotEmpty();
-        assertThat(ws.ofBooks(List.of("primary", "junior", "senior"), List.of())).hasSize(6877);
+        assertThat(ws.ofBooks(List.of("primary", "junior", "senior"), List.of())).hasSize(6887);
     }
 }
