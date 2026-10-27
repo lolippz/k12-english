@@ -225,31 +225,32 @@ export default function App() {
 
   return (
     <div className="shell">
-      <div className="topbar">
+      <header className="topbar app-topbar">
         <div className="brand">
-          英语学习<small>K12 词库 · 单机版</small>
+          <span className="brand-mark" aria-hidden="true">K</span>
+          <span className="brand-name">英语学习<small>K12 词库 · 单机版</small></span>
         </div>
-        <div className="nav">
-          <button className={tab === 'home' && !session ? 'on' : ''} onClick={() => { exitSession(); setTab('home') }}>
-            今日
-          </button>
-          <button className={tab === 'stats' ? 'on' : ''} onClick={() => { exitSession(); setTab('stats') }}>
-            学情
-          </button>
-          <button className={tab === 'settings' ? 'on' : ''} onClick={() => { exitSession(); setTab('settings') }}>
-            设置
-          </button>
-          {user.admin && (
-            <button className={tab === 'admin' ? 'on' : ''} onClick={() => { exitSession(); setTab('admin') }}>
-              管理
+        <nav className="nav" aria-label="主导航">
+          <div className="segmented main-nav">
+            <button aria-current={tab === 'home' && !session ? 'page' : undefined} className={tab === 'home' && !session ? 'on' : ''} onClick={() => { exitSession(); setTab('home') }}>
+              今日
             </button>
-          )}
-          <span className="muted" style={{ fontSize: 13, alignSelf: 'center', margin: '0 4px' }}>
-            {user.username}
-          </span>
-          <button onClick={handleLogout}>退出</button>
-        </div>
-      </div>
+            <button aria-current={tab === 'stats' ? 'page' : undefined} className={tab === 'stats' ? 'on' : ''} onClick={() => { exitSession(); setTab('stats') }}>
+              学情
+            </button>
+            <button aria-current={tab === 'settings' ? 'page' : undefined} className={tab === 'settings' ? 'on' : ''} onClick={() => { exitSession(); setTab('settings') }}>
+              设置
+            </button>
+            {user.admin && (
+              <button aria-current={tab === 'admin' ? 'page' : undefined} className={tab === 'admin' ? 'on' : ''} onClick={() => { exitSession(); setTab('admin') }}>
+                管理
+              </button>
+            )}
+          </div>
+          <span className="user-chip">{user.username}</span>
+          <button className="mini-btn" onClick={handleLogout}>退出</button>
+        </nav>
+      </header>
 
       {session && currentWord ? (
         <Study

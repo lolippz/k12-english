@@ -40,16 +40,20 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
   }
 
   return (
-    <div className="main">
-      <h1>设置</h1>
-      <p className="sub">调整学习范围与出题方式，改动即时生效并保存在本机</p>
+    <main className="main settings-page">
+      <header className="page-heading">
+        <div className="page-kicker">PERSONALIZE YOUR STUDY</div>
+        <h1 className="page-title">学习设置</h1>
+        <p className="page-sub">按你的教材和节奏调整，修改会自动保存。</p>
+      </header>
 
-      <div className="card">
+      <section className="card settings-section settings-range">
+        <div className="settings-section-heading"><div><span className="section-index">01</span><h2>学习范围</h2></div><span className="section-caption">CURRICULUM</span></div>
         <div className="field">
           <label>学段</label>
           <div className="chips">
             {STAGES.map((s) => (
-              <button key={s} className={`chip${settings.stages.includes(s) ? ' on' : ''}`} onClick={() => toggleStage(s)}>
+              <button key={s} aria-pressed={settings.stages.includes(s)} className={`chip${settings.stages.includes(s) ? ' on' : ''}`} onClick={() => toggleStage(s)}>
                 {STAGE_LABEL[s]}
               </button>
             ))}
@@ -69,7 +73,7 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
           </label>
           <div className="chips scroll">
             {books.map((b) => (
-              <button key={b} className={`chip${settings.books.includes(b) ? ' on' : ''}`} onClick={() => toggleBook(b)}>
+              <button key={b} aria-pressed={settings.books.includes(b)} className={`chip${settings.books.includes(b) ? ' on' : ''}`} onClick={() => toggleBook(b)}>
                 {b}
               </button>
             ))}
@@ -80,11 +84,15 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
             </button>
           )}
         </div>
-      </div>
+      </section>
 
-      <div className="card">
-        <div className="field">
-          <label>每日新词上限</label>
+      <section className="card settings-section">
+        <div className="settings-section-heading"><div><span className="section-index">02</span><h2>每日计划</h2></div><span className="section-caption">DAILY GOALS</span></div>
+        <div className="listrow">
+          <div className="lr-main">
+            <div className="lr-title">每日新词上限</div>
+            <div className="lr-desc">建议 15–25，词池越大越要控制节奏</div>
+          </div>
           <input
             className="num"
             type="number"
@@ -93,10 +101,12 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
             value={settings.newPerDay}
             onChange={(e) => onChange({ newPerDay: Math.max(0, Number(e.target.value) || 0) })}
           />
-          <div className="help">建议 15-25。词池越大越要控制节奏，否则复习量会滚雪球。</div>
         </div>
-        <div className="field" style={{ marginBottom: 0 }}>
-          <label>每日复习上限</label>
+        <div className="listrow">
+          <div className="lr-main">
+            <div className="lr-title">每日复习上限</div>
+            <div className="lr-desc">单次会话最多安排的到期卡片数</div>
+          </div>
           <input
             className="num"
             type="number"
@@ -105,62 +115,67 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
             value={settings.reviewPerDay}
             onChange={(e) => onChange({ reviewPerDay: Math.max(10, Number(e.target.value) || 10) })}
           />
-          <div className="help">单次学习会话里最多安排多少张到期卡片。</div>
         </div>
-      </div>
+      </section>
 
-      <div className="card">
+      <section className="card settings-section">
+        <div className="settings-section-heading"><div><span className="section-index">03</span><h2>出题与发音</h2></div><span className="section-caption">PREFERENCES</span></div>
         <div className="field">
           <label>出题模式</label>
           <div className="chips">
             {MODES.map((m) => (
-              <button key={m.v} className={`chip${settings.mode === m.v ? ' on' : ''}`} onClick={() => onChange({ mode: m.v })}>
+              <button key={m.v} aria-pressed={settings.mode === m.v} className={`chip mode-chip${settings.mode === m.v ? ' on' : ''}`} onClick={() => onChange({ mode: m.v })}>
                 {m.label}
+                {settings.mode === m.v && <span className="mode-check" aria-hidden="true">✓</span>}
               </button>
             ))}
           </div>
           <div className="help">{MODES.find((m) => m.v === settings.mode)?.desc}</div>
         </div>
 
-        <div className="field">
-          <label>发音口音</label>
-          <div className="chips">
-            <button className={`chip${settings.accent === 'us' ? ' on' : ''}`} onClick={() => onChange({ accent: 'us' })}>
+        <div className="listrow">
+          <div className="lr-main">
+            <div className="lr-title">发音口音</div>
+            <div className="lr-desc">
+              {voices.length ? `本机可用英语语音 ${voices.length} 个` : '未加载到英语语音包，可在系统设置里安装'}
+            </div>
+          </div>
+          <div className="segmented">
+            <button className={settings.accent === 'us' ? 'on' : ''} onClick={() => onChange({ accent: 'us' })}>
               美式
             </button>
-            <button className={`chip${settings.accent === 'uk' ? ' on' : ''}`} onClick={() => onChange({ accent: 'uk' })}>
+            <button className={settings.accent === 'uk' ? 'on' : ''} onClick={() => onChange({ accent: 'uk' })}>
               英式
             </button>
-            <button
-              className="chip"
-              onClick={() => speak('Good morning. Let us learn English together.', { accent: settings.accent })}
-            >
-              试听
-            </button>
           </div>
-          <div className="help">
-            {voices.length ? `本机可用英语语音 ${voices.length} 个` : '尚未加载到英语语音包，可在系统设置里安装英语语音'}
-          </div>
+          <button
+            className="mini-btn"
+            onClick={() => speak('Good morning. Let us learn English together.', { accent: settings.accent })}
+          >
+            试听
+          </button>
         </div>
 
-        <div className="field" style={{ marginBottom: 0 }}>
-          <label>答题提示音</label>
-          <div className="chips">
-            <button className={`chip${settings.sound ? ' on' : ''}`} onClick={() => onChange({ sound: true })}>
-              开启
-            </button>
-            <button className={`chip${!settings.sound ? ' on' : ''}`} onClick={() => onChange({ sound: false })}>
-              关闭
-            </button>
+        <div className="listrow">
+          <div className="lr-main">
+            <div className="lr-title">答题提示音</div>
+            <div className="lr-desc">答对 / 答错时播放提示音</div>
           </div>
+          <button
+            className={`switch${settings.sound ? ' on' : ''}`}
+            aria-label="答题提示音"
+            aria-checked={settings.sound}
+            role="switch"
+            onClick={() => onChange({ sound: !settings.sound })}
+          />
         </div>
-      </div>
+      </section>
 
-      <div className="card">
-        <h2>数据</h2>
+      <section className="card settings-section data-section">
+        <div className="settings-section-heading"><div><span className="section-index">04</span><h2>数据与备份</h2></div><span className="section-caption">YOUR DATA</span></div>
         <p className="muted" style={{ fontSize: 13.5, marginTop: 0 }}>
           当前已建立 {cardCount} 张记忆卡片。所有数据保存在本机 SQLite 数据库
-          （用户目录下的 <code>.k12-english/progress.db</code>），换电脑前请先导出。
+          （用户目录下的 <code>.k12-english/progress.db</code>），按账号隔离，换电脑前请先导出。
         </p>
         <div className="row" style={{ flexWrap: 'wrap' }}>
           <button className="btn" onClick={onExport}>
@@ -191,7 +206,7 @@ export default function SettingsPage({ settings, cardCount, onChange, onExport, 
             清空学习记录
           </button>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }

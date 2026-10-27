@@ -129,7 +129,7 @@ export default function Study({ word, card, session, settings, onGrade, onExit }
         <div className="bar">
           <i style={{ width: `${progress}%` }} />
         </div>
-        <span className="study-count">
+        <span className="pill-count">
           {session.idx + 1} / {session.total}
         </span>
       </div>
@@ -279,21 +279,19 @@ export default function Study({ word, card, session, settings, onGrade, onExit }
             </div>
 
             <div className="grade-row">
-              {[Rating.Again, Rating.Hard, Rating.Good, Rating.Easy].map((g) => (
-                <button
-                  key={g}
-                  className={`grade ${gradeClass[g]}`}
-                  onClick={() => grade(g as Grade)}
-                  style={
-                    (correct && g === Rating.Good) || (!correct && g === Rating.Again)
-                      ? { borderColor: 'var(--primary)', background: 'var(--primary-bg)' }
-                      : undefined
-                  }
-                >
-                  <b>{gradeLabel[g]}</b>
-                  <small>{humanInterval(intervals[String(g)] ?? 0)}</small>
-                </button>
-              ))}
+              {[Rating.Again, Rating.Hard, Rating.Good, Rating.Easy].map((g) => {
+                const suggested = (correct && g === Rating.Good) || (!correct && g === Rating.Again)
+                return (
+                  <button
+                    key={g}
+                    className={`grade ${gradeClass[g]}${suggested ? ' suggested' : ''}`}
+                    onClick={() => grade(g as Grade)}
+                  >
+                    <b>{gradeLabel[g]}</b>
+                    <small>{humanInterval(intervals[String(g)] ?? 0)}</small>
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}

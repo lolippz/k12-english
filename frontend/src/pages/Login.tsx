@@ -53,11 +53,11 @@ export default function Login({ hasUsers, onAuthed }: Props) {
         </p>
 
         {hasUsers && (
-          <div className="auth-toggle">
-            <button className={mode === 'login' ? 'on' : ''} onClick={() => { setMode('login'); setError('') }}>
+          <div className="segmented" style={{ marginBottom: 18 }}>
+            <button className={mode === 'login' ? 'on' : ''} onClick={() => { setMode('login'); setError('') }} style={{ flex: 1 }}>
               登录
             </button>
-            <button className={mode === 'register' ? 'on' : ''} onClick={() => { setMode('register'); setError('') }}>
+            <button className={mode === 'register' ? 'on' : ''} onClick={() => { setMode('register'); setError('') }} style={{ flex: 1 }}>
               注册
             </button>
           </div>

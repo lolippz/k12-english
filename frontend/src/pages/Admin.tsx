@@ -27,6 +27,8 @@ export default function Admin({ me, flash }: Props) {
   const [newExpires, setNewExpires] = useState('')
   const [newNote, setNewNote] = useState('')
   const [creating, setCreating] = useState(false)
+  const [resetUserId, setResetUserId] = useState<string | null>(null)
+  const [newPassword, setNewPassword] = useState('')
 
   const reload = useCallback(async () => {
     try {
@@ -50,7 +52,6 @@ export default function Admin({ me, flash }: Props) {
   const toggleRole = async (u: AdminUser) => {
     const to = u.role === 'admin' ? 'user' : 'admin'
     const verb = to === 'admin' ? '设为管理员' : '降为普通用户'
-    if (!confirm(`确定把「${u.username}」${verb}？`)) return
     try {
       await api.adminSetRole(u.id, to)
       flash(`已${verb}`)
@@ -61,15 +62,15 @@ export default function Admin({ me, flash }: Props) {
   }
 
   const resetPassword = async (u: AdminUser) => {
-    const pwd = prompt(`为「${u.username}」设置新密码（至少 6 位）：`)
-    if (pwd === null) return
-    if (pwd.length < 6) {
+    if (newPassword.length < 6) {
       flash('密码至少 6 位')
       return
     }
     try {
-      await api.adminResetPassword(u.id, pwd)
+      await api.adminResetPassword(u.id, newPassword)
       flash('密码已重置')
+      setResetUserId(null)
+      setNewPassword('')
     } catch (e) {
       flash(`重置失败：${(e as Error).message}`)
     }
@@ -126,9 +127,18 @@ export default function Admin({ me, flash }: Props) {
   }
 
   return (
-    <div className="main">
-      <h1>管理后台</h1>
-      <p className="sub">账号与邀请码管理，仅管理员可见</p>
+    <main className="main admin-page">
+      <header className="page-heading">
+        <div className="page-kicker">WORKSPACE CONTROL</div>
+        <h1 className="page-title">管理后台</h1>
+        <p className="page-sub">账号与邀请码管理，仅管理员可见。</p>
+      </header>
+
+      <div className="admin-overview">
+        <div className="admin-stat"><span>账号总数</span><b>{users.length}</b></div>
+        <div className="admin-stat"><span>管理员</span><b>{users.filter((u) => u.role === 'admin').length}</b></div>
+        <div className="admin-stat"><span>已创建邀请码</span><b>{invites.length}</b></div>
+      </div>
 
       {error && (
         <div className="card" style={{ borderColor: 'var(--bad)' }}>
@@ -136,14 +146,14 @@ export default function Admin({ me, flash }: Props) {
         </div>
       )}
 
-      <div className="card">
-        <h2>用户（{users.length}）</h2>
+      <section className="card admin-section">
+        <div className="admin-section-heading"><div><span className="section-caption">MEMBERS</span><h2>账号管理</h2></div><span className="admin-count">{users.length} 个账号</span></div>
         {!loaded ? (
           <p className="muted">加载中…</p>
         ) : users.length === 0 ? (
           <p className="muted">还没有用户</p>
         ) : (
-          <div className="mlist">
+          <div className="mlist admin-list">
             {users.map((u) => (
               <div className="it" key={u.id}>
                 <div className="grow">
@@ -157,23 +167,31 @@ export default function Admin({ me, flash }: Props) {
                   </div>
                 </div>
                 <span className={`tag ${u.role === 'admin' ? 'blue' : ''}`}>{u.role === 'admin' ? '管理员' : '用户'}</span>
-                <button className="mini-btn" onClick={() => toggleRole(u)} disabled={u.id === me.id}>
-                  {u.role === 'admin' ? '降为用户' : '设为管理员'}
-                </button>
-                <button className="mini-btn" onClick={() => resetPassword(u)}>重置密码</button>
-                <button className="mini-btn danger" onClick={() => removeUser(u)} disabled={u.id === me.id}>
-                  删除
-                </button>
+                <div className="user-actions">
+                  {resetUserId === u.id ? (
+                    <div className="password-inline">
+                      <input className="text-input" type="password" autoComplete="new-password" aria-label={`为 ${u.username} 设置新密码`} placeholder="新密码（至少 6 位）" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') void resetPassword(u); if (e.key === 'Escape') { setResetUserId(null); setNewPassword('') } }} />
+                      <button className="mini-btn primary-mini" onClick={() => void resetPassword(u)}>保存</button>
+                      <button className="mini-btn" onClick={() => { setResetUserId(null); setNewPassword('') }}>取消</button>
+                    </div>
+                  ) : (
+                    <>
+                      <button className="mini-btn" onClick={() => toggleRole(u)} disabled={u.id === me.id}>{u.role === 'admin' ? '降为用户' : '设为管理员'}</button>
+                      <button className="mini-btn" onClick={() => { setResetUserId(u.id); setNewPassword('') }}>修改密码</button>
+                      <button className="mini-btn danger" onClick={() => removeUser(u)} disabled={u.id === me.id}>删除</button>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
-      <div className="card">
-        <h2>邀请码（{invites.length}）</h2>
-        <div className="row" style={{ flexWrap: 'wrap', marginBottom: 14 }}>
-          <label className="muted" style={{ fontSize: 13 }}>
+      <section className="card admin-section">
+        <div className="admin-section-heading"><div><span className="section-caption">INVITATIONS</span><h2>邀请码</h2></div><span className="admin-count">{invites.length} 个</span></div>
+        <div className="invite-form">
+          <label className="invite-field muted" style={{ fontSize: 13 }}>
             次数
             <input
               className="num"
@@ -185,7 +203,7 @@ export default function Admin({ me, flash }: Props) {
               onChange={(e) => setNewMaxUses(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
             />
           </label>
-          <label className="muted" style={{ fontSize: 13 }}>
+          <label className="invite-field muted" style={{ fontSize: 13 }}>
             有效期
             <input
               className="text-input"
@@ -196,13 +214,12 @@ export default function Admin({ me, flash }: Props) {
             />
           </label>
           <input
-            className="text-input"
-            style={{ width: 200 }}
+            className="text-input invite-note"
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
             placeholder="备注（可选）"
           />
-          <button className="btn" onClick={createInvite} disabled={creating}>
+          <button className="btn primary invite-submit" onClick={createInvite} disabled={creating}>
             {creating ? '创建中…' : '生成邀请码'}
           </button>
         </div>
@@ -212,9 +229,9 @@ export default function Admin({ me, flash }: Props) {
         ) : invites.length === 0 ? (
           <p className="muted">还没有邀请码，先生成一个</p>
         ) : (
-          <div className="mlist">
+          <div className="mlist admin-list">
             {invites.map((inv) => (
-              <div className="it" key={inv.code}>
+              <div className="it invite-row" key={inv.code}>
                 <span className="code">{inv.code}</span>
                 <span className={`tag ${inv.used >= inv.maxUses ? 'amber' : 'green'}`}>
                   {inv.used}/{inv.maxUses}
@@ -229,7 +246,7 @@ export default function Admin({ me, flash }: Props) {
             ))}
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   )
 }
